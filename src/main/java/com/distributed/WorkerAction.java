@@ -1,4 +1,4 @@
-package com.distributed.worker.sort;
+package com.distributed;
 
 import com.distributed.domain.Constants;
 import com.distributed.domain.MyMessage;

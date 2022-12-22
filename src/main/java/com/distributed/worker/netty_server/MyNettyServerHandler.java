@@ -4,7 +4,7 @@ import com.distributed.domain.*;
 import com.distributed.util.CacheUtil;
 import com.distributed.util.FileUtil;
 import com.distributed.util.MsgUtil;
-import com.distributed.worker.sort.WorkerAction;
+import com.distributed.WorkerAction;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
