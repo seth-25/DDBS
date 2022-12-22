@@ -1,42 +1,45 @@
-package com.distributed.worker.sort;
+package com.distributed;
 
 import com.distributed.domain.Constants;
+import com.distributed.domain.InstructInit;
 import com.distributed.domain.MyMessage;
 import com.distributed.domain.Parameters;
-import com.distributed.util.CoordinatorUtil;
-import com.distributed.util.FileUtil;
-import com.distributed.util.MsgUtil;
-import com.distributed.worker.netty_client.MyNettyClient;
+import com.distributed.util.*;
+import com.distributed.worker.file_netty_client.FileClient;
+import com.distributed.worker.instruct_netty_client.InstructClient;
 import io.netty.channel.ChannelFuture;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class WorkerAction {
 
-
     public static void sendSaxStatics(String hostName) throws IOException, InterruptedException {
+        InstructClient fileClient = new InstructClient(hostName, Parameters.InstructNettyClient.port);
+        ChannelFuture channelFuture = fileClient.start();
 
+        // sax统计很小，用instruct形式传输即可
+        InstructInit instructInit = new InstructInit(Constants.InstructionType.SAX_STATISTIC);
+        instructInit.setDataObject(CacheUtil.cntSaxes);
+        channelFuture.channel().writeAndFlush(instructInit);
+        try {
+            channelFuture.channel().closeFuture().sync(); // 等待关闭
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        fileClient.close();
 
-//        ArrayList<File> files = FileUtil.getAllFile(Parameters.MergeSort.countSaxPath);
-//        for (File file: files) {
-//            MyNettyClient myNettyClient = new MyNettyClient(hostName, Parameters.NettyClient.port);
-//            ChannelFuture channelFuture = myNettyClient.start();
-//
-//            MyMessage myMessage = MsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), file.length());
-//            System.out.println(file.getAbsolutePath() + " " + file.getName() + " " + file.length());
-//
-//            channelFuture.channel().writeAndFlush(myMessage);
-//            try {
-//                channelFuture.channel().closeFuture().sync(); // 等待关闭
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//            myNettyClient.close();
+        System.out.println("sax统计传输完成");
+        CacheUtil.cntSaxes = null;
+        CoordinatorUtil.coordinator.setNode(Parameters.Zookeeper.workerPath, Constants.WorkerStatus.HAS_SENT_SAX_STATISTIC);
+    }
+    public static void sendSax(String hostName) throws IOException, InterruptedException {
 
         ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
         ArrayList<File> files = FileUtil.getAllFile(Parameters.MergeSort.countSaxPath);
@@ -49,8 +52,8 @@ public class WorkerAction {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    MyNettyClient myNettyClient = new MyNettyClient(hostName, Parameters.NettyClient.port);
-                    ChannelFuture channelFuture = myNettyClient.start();
+                    FileClient fileClient = new FileClient(hostName, Parameters.FileNettyClient.port);
+                    ChannelFuture channelFuture = fileClient.start();
 
                     MyMessage myMessage = MsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
                     System.out.println("传输文件: " + file.getAbsolutePath());
@@ -61,7 +64,7 @@ public class WorkerAction {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    myNettyClient.close();
+                    fileClient.close();
                     countDownLatch.countDown();
                 }
             };

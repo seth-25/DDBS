@@ -29,7 +29,8 @@ public class Constants {
         public static final String HAS_SENT_SAX_STATISTIC = "has sent sax statistic"; // 已经将sax值的统计发给master
     }
 
-    public static class TransferInstruction {
-        public static final String SEND_SAX_STATISTIC = "send sax statistic"; // Master向Worker请求发送sax
+    public static class InstructionType {
+        public static final String SEND_SAX_STATISTIC = "send sax statistic"; // Master向Worker请求发送sax统计
+        public static final String SAX_STATISTIC = "sax statistic"; // Worker向Master请求发送的sax统计
     }
 }

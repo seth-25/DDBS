@@ -3,16 +3,6 @@ package com.distributed.util;
 import com.distributed.domain.*;
 
 public class MsgUtil {
-    public static MyMessage buildInstruction(String instruction, String clientIP) {
-
-        Instruction ins = new Instruction();
-
-        MyMessage myMessage = new MyMessage();
-        myMessage.setType(Constants.TransferType.INSTRUCT);
-        myMessage.setDataObject(ins);
-
-        return myMessage;
-    }
 
     public static MyMessage buildFileRequest(String filePath, String fileName, String fileType, long fileSize) {
 

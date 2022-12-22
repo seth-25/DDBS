@@ -1,16 +1,17 @@
-package com.distributed.util;
+package com.distributed.codec;
 
+import com.distributed.util.SerializationUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-public class ObjDecoder extends ByteToMessageDecoder {
+public class FileObjDecoder extends ByteToMessageDecoder {
 
     private Class<?> genericClass;
 
-    public ObjDecoder(Class<?> genericClass) {
+    public FileObjDecoder(Class<?> genericClass) {
         this.genericClass = genericClass;
     }
 

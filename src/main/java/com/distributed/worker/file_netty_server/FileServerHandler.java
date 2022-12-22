@@ -1,17 +1,16 @@
-package com.distributed.worker.netty_server;
+package com.distributed.worker.file_netty_server;
 
 import com.distributed.domain.*;
 import com.distributed.util.CacheUtil;
 import com.distributed.util.FileUtil;
 import com.distributed.util.MsgUtil;
-import com.distributed.worker.sort.WorkerAction;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.CharsetUtil;
 
-public class MyNettyServerHandler extends ChannelInboundHandlerAdapter {
+public class FileServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
@@ -41,18 +40,16 @@ public class MyNettyServerHandler extends ChannelInboundHandlerAdapter {
 
         switch(myMessageType) {
             case Constants.TransferType.INSTRUCT:
-                Instruction instruction = (Instruction) myMessage.getDataObject();
-
-                String instructionStr = instruction.getInstruction();
-                switch (instructionStr) {
-                    case Constants.TransferInstruction.SEND_SAX_STATISTIC:    // 给Master发送SAX值个数统计
-                        String hostName = instruction.getHostName();
-                        WorkerAction.sendSaxStatics(hostName);
-                        break;
-
-
-                }
-                break;
+//                Instruction instruction = (Instruction) myMessage.getDataObject();
+//
+//                String instructionStr = instruction.getInstruction();
+//                switch (instructionStr) {
+//                    case Constants.TransferInstruction.SEND_SAX_STATISTIC:    // 给Master发送SAX值个数统计
+//                        String hostName = instruction.getHostName();
+//                        WorkerAction.sendSaxStatics(hostName);
+//                        break;
+//                }
+//                break;
 
             case Constants.TransferType.FILE:
                 FileData fileData = (FileData) myMessage.getDataObject();

@@ -3,6 +3,7 @@ package com.distributed.worker;
 import com.distributed.domain.Constants;
 import com.distributed.domain.Parameters;
 import com.distributed.worker.sort.MergeSort;
+import com.distributed.worker.sort.MemorySort;
 import org.apache.zookeeper.CreateMode;
 
 import java.io.IOException;
@@ -36,9 +37,14 @@ public class Worker extends Thread{
     }
 
     private void localMergeSort() throws IOException {
-        MergeSort mergeSort = new MergeSort();
-        mergeSort.memorySort();
-        mergeSort.mergeSort();
+        MergeSort localMergeSort = new MergeSort();
+        localMergeSort.memorySort();
+        localMergeSort.mergeSort();
+    }
+
+    private void localSort() throws IOException {
+        MemorySort localMemorySort = new MemorySort();
+        localMemorySort.memorySort();
     }
 
 
@@ -46,20 +52,21 @@ public class Worker extends Thread{
         // worker启动
         openWorker();
 
-        // 本地归并
+        // 初始化数据较少，用内存排序
         try {
-            localMergeSort();
+//            localMergeSort();
+            localSort();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+//
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println("本地归并排序完成");
+        System.out.println("本地排序完成");
         // 状态修改为已经排序
         this.coordinator.setNode(Parameters.Zookeeper.workerPath, Constants.WorkerStatus.HAS_SORT);
 

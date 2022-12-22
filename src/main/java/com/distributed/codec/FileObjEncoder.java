@@ -1,15 +1,16 @@
-package com.distributed.util;
+package com.distributed.codec;
 
+import com.distributed.util.SerializationUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
 
-public class ObjEncoder extends MessageToByteEncoder {
+public class FileObjEncoder extends MessageToByteEncoder {
 
     private Class<?> genericClass;
 
-    public ObjEncoder(Class<?> genericClass) {
+    public FileObjEncoder(Class<?> genericClass) {
         this.genericClass = genericClass;
     }
 

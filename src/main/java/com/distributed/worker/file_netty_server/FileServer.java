@@ -1,13 +1,11 @@
-package com.distributed.worker.netty_server;
+package com.distributed.worker.file_netty_server;
 
-import com.distributed.worker.Coordinator;
-import com.distributed.worker.Worker;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class MyNettyServer extends Thread{
+public class FileServer extends Thread{
 
     private final int PORT;
 
@@ -15,7 +13,7 @@ public class MyNettyServer extends Thread{
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
     private Channel channel;
 
-    public MyNettyServer(int PORT) {
+    public FileServer(int PORT) {
         this.PORT = PORT;
     }
 
@@ -27,7 +25,7 @@ public class MyNettyServer extends Thread{
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.AUTO_READ, true)
-                    .childHandler(new MyNettyServerChannelInitializer());
+                    .childHandler(new FileServerChannelInitializer());
 
             channelFuture = bootstrap.bind(PORT).syncUninterruptibly();
 

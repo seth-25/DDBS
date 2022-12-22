@@ -1,4 +1,4 @@
-package com.distributed.worker.netty_client;
+package com.distributed.worker.file_netty_client;
 
 import com.distributed.domain.*;
 import com.distributed.util.FileUtil;
@@ -8,7 +8,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 
 
-public class MyNettyClientHandler  extends ChannelInboundHandlerAdapter {
+public class FileClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
@@ -33,8 +33,8 @@ public class MyNettyClientHandler  extends ChannelInboundHandlerAdapter {
 
         switch(myMessageType) {
             case Constants.TransferType.INSTRUCT:
-                Instruction instruction = (Instruction) myMessage.getDataObject();
-                System.out.println("服务端指令：" + instruction.getInstruction());
+                InstructInit instructInit = (InstructInit) myMessage.getDataObject();
+                System.out.println("服务端指令：" + instructInit.getInstruction());
                 break;
 
             case Constants.TransferType.FILE:
