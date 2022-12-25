@@ -12,6 +12,10 @@ public class Sax implements Comparable<Sax>{
         System.arraycopy(sax, dataSize, this.p, 0, pointerSize);
     }
 
+    public Sax(byte[] sax, int dataSize) {
+        this.data = sax;
+    }
+
     public byte[] getData(){
         return data;
     }

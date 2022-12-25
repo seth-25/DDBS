@@ -32,5 +32,7 @@ public class Constants {
     public static class InstructionType {
         public static final String SEND_SAX_STATISTIC = "send sax statistic"; // Master向Worker请求发送sax统计
         public static final String SAX_STATISTIC = "sax statistic"; // Worker向Master请求发送的sax统计
+        public static final String SAX_RANGES = "sax ranges"; // Master向Worker请求发送sax
+        public static final String SEND_SAX = "send sax"; // Worker向Worker发送sax
     }
 }

@@ -1,7 +1,5 @@
 package com.distributed.worker.instruct_netty_client;
 
-import com.distributed.WorkerAction;
-import com.distributed.domain.Constants;
 import com.distributed.domain.InstructInit;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

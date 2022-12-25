@@ -3,16 +3,10 @@ package com.distributed.util;
 import com.distributed.domain.InstructInit;
 
 public class InstructUtil {
-    public static InstructInit buildInstruction(String instruction, String hostName) {
+    public static InstructInit buildInstruction(String instruction, Object obj) {
 
         InstructInit ins = new InstructInit(instruction);
-        ins.setDataObject(hostName);
-        return ins;
-    }
-
-    public static InstructInit buildInstruction(String instruction, String[] hostNames) {
-        InstructInit ins = new InstructInit(instruction);
-        ins.setDataObject(hostNames);
+        ins.setDataObject(obj);
         return ins;
     }
 }
