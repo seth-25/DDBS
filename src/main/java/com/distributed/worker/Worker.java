@@ -2,7 +2,8 @@ package com.distributed.worker;
 
 import com.distributed.domain.Constants;
 import com.distributed.domain.Parameters;
-import com.distributed.worker.sort.MergeSort;
+import com.distributed.util.CacheUtil;
+//import com.distributed.worker.sort.MergeSort;
 import com.distributed.worker.sort.MemorySort;
 import org.apache.zookeeper.CreateMode;
 
@@ -25,6 +26,7 @@ public class Worker extends Thread{
         // 创建worker临时节点
         if (this.coordinator.createNode(CreateMode.EPHEMERAL, Parameters.Zookeeper.workerPath, Constants.WorkerStatus.INIT)) {
             System.out.println("创建临时节点成功");
+            CacheUtil.workerState = Constants.WorkerStatus.INIT;
         }
         else {
             throw new RuntimeException("创建节点失败，该节点已在zookeeper存在");
@@ -36,11 +38,11 @@ public class Worker extends Thread{
         this.coordinator.closeCoordinator();
     }
 
-    private void localMergeSort() throws IOException {
-        MergeSort localMergeSort = new MergeSort();
-        localMergeSort.memorySort();
-        localMergeSort.mergeSort();
-    }
+//    private void localMergeSort() throws IOException {
+//        MergeSort localMergeSort = new MergeSort();
+//        localMergeSort.memorySort();
+//        localMergeSort.mergeSort();
+//    }
 
     private void localSort() throws IOException {
         MemorySort localMemorySort = new MemorySort();
@@ -71,14 +73,14 @@ public class Worker extends Thread{
         this.coordinator.setNode(Parameters.Zookeeper.workerPath, Constants.WorkerStatus.HAS_SORT);
 
 
-        try {
-            Thread.sleep(Long.MAX_VALUE);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        // worker关闭
-        closeWorker();
+//        try {
+//            Thread.sleep(Long.MAX_VALUE);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        // worker关闭
+//        closeWorker();
     }
 
 }

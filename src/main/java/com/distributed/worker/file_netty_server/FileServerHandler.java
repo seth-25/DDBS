@@ -118,8 +118,8 @@ public class FileServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("fileInfoMap: " + CacheUtil.fileInfoMap);
-        ctx.writeAndFlush(Unpooled.copiedBuffer("收到客户端消息", CharsetUtil.UTF_8));
+//        System.out.println("fileInfoMap: " + CacheUtil.fileInfoMap);
+//        ctx.writeAndFlush(Unpooled.copiedBuffer("收到客户端消息", CharsetUtil.UTF_8));
     }
 
     @Override

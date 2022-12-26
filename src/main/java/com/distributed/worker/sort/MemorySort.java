@@ -4,7 +4,6 @@ import com.distributed.domain.Parameters;
 import com.distributed.domain.Sax;
 import com.distributed.util.CacheUtil;
 import com.distributed.util.FileChannelReader;
-import com.distributed.util.FileChannelWriter;
 import com.distributed.util.FileUtil;
 
 import java.io.File;
@@ -30,7 +29,7 @@ public class MemorySort {
             saxByte[cntByte ++ ] = array;
             if (cntByte == Parameters.saxSize) {
                 cntByte = 0;
-                Sax sax = new Sax(saxByte, Parameters.dataSize, Parameters.pointerSize);
+                Sax sax = new Sax(saxByte, Parameters.saxDataSize, Parameters.saxPointerSize);
                 saxes.add(sax);
                 saxByte = new byte[Parameters.MemorySort.readSize];
 
@@ -46,16 +45,16 @@ public class MemorySort {
     }
 
     // 排序好的sax写到文件里
-    private void writeSaxFile(String fileName, ArrayList<Sax> saxes, String path) throws IOException {
-        byte[] content = new byte[saxes.size() * Parameters.saxSize];
-        for (int i = 0; i < saxes.size(); i ++ ) {
-            byte[] saxByte = saxes.get(i).getSax(); // 一个sax的byte形式
-            System.arraycopy(saxByte, 0, content, i * Parameters.saxSize, Parameters.saxSize);
-        }
-        FileChannelWriter writer = new FileChannelWriter(path + fileName, Parameters.MemorySort.writeSize);
-        writer.write(content);
-        writer.close();
-    }
+//    private void writeSaxFile(String fileName, ArrayList<Sax> saxes, String path) throws IOException {
+//        byte[] content = new byte[saxes.size() * Parameters.saxSize];
+//        for (int i = 0; i < saxes.size(); i ++ ) {
+//            byte[] saxByte = saxes.get(i).getSax(); // 一个sax的byte形式
+//            System.arraycopy(saxByte, 0, content, i * Parameters.saxSize, Parameters.saxSize);
+//        }
+//        FileChannelWriter writer = new FileChannelWriter(path + fileName, Parameters.MemorySort.writeSize);
+//        writer.write(content);
+//        writer.close();
+//    }
     public void memorySort() throws IOException {
         ArrayList<File> files = FileUtil.getAllFile(Parameters.MemorySort.inputFolderPath);
         int cntFile = 0;

@@ -6,11 +6,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
 
-public class FileObjEncoder extends MessageToByteEncoder {
+public class ObjEncoder extends MessageToByteEncoder {
 
     private Class<?> genericClass;
 
-    public FileObjEncoder(Class<?> genericClass) {
+    public ObjEncoder(Class<?> genericClass) {
         this.genericClass = genericClass;
     }
 

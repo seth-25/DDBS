@@ -24,15 +24,28 @@ public class Constants {
     }
 
     public static class WorkerStatus {
-        public static final String INIT = "init"; // 初始化创建节点
+        public static final String INIT = "init"; // 初始化
         public static final String HAS_SORT = "has sort"; // 已经本地归并排序
         public static final String HAS_SENT_SAX_STATISTIC = "has sent sax statistic"; // 已经将sax值的统计发给master
+        public static final String HAS_SENT_SAX = "has sent sax"; // 已经将sax发给worker
+        public static final String HAS_PUT_SAX = "has put sax"; // 已经将sax存入leveldb
+        public static final String HAS_PUT_TS = "has put ts"; // 已经将ts存入本机
+
+        public static final String RUNNING = "running"; // 运行中
+
+        public static final String BALANCE = "in balance";
     }
 
     public static class InstructionType {
         public static final String SEND_SAX_STATISTIC = "send sax statistic"; // Master向Worker请求发送sax统计
         public static final String SAX_STATISTIC = "sax statistic"; // Worker向Master请求发送的sax统计
         public static final String SAX_RANGES = "sax ranges"; // Master向Worker请求发送sax
+        public static final String TS_RANGES = "ts ranges"; // Master向Worker发送ts范围
         public static final String SEND_SAX = "send sax"; // Worker向Worker发送sax
+        public static final String SEND_TS = "send ts"; // Worker向Worker发送sax
+    }
+
+    public static class TsType {
+
     }
 }

@@ -2,6 +2,7 @@ package com.distributed.util;
 
 import com.distributed.domain.Constants;
 import com.distributed.domain.FileData;
+import com.distributed.domain.TimeSeries;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,13 +61,29 @@ public class FileUtil {
     }
 
     public static void writeFile(String fileFolder, FileData fileData) throws IOException {
-
         File file = new File(fileFolder + "/" + fileData.getFileName());
 
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");//r: 只读模式 rw:读写模式
         randomAccessFile.seek(fileData.getBeginPos());      //移动文件记录指针的位置,
         randomAccessFile.write(fileData.getBytes());        //调用了seek（start）方法，是指把文件的记录指针定位到start字节的位置。也就是说程序将从start字节开始写数据
         randomAccessFile.close();
+    }
+
+    public static long writeFile(String fileFolder, TimeSeries timeSeries) throws IOException {
+        File folder = new File(fileFolder);
+        if (!folder.exists()) {
+            boolean flag = folder.mkdir();
+        }
+        File file = new File(fileFolder + "/" + TsUtil.computeHash(timeSeries));
+
+        RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");//r: 只读模式 rw:读写模式
+        long pos = randomAccessFile.length();
+        randomAccessFile.seek(pos);      //移动文件记录指针的位置,
+        randomAccessFile.write(timeSeries.getTimeSeries());        //调用了seek（start）方法，是指把文件的记录指针定位到start字节的位置。也就是说程序将从start字节开始写数据
+        randomAccessFile.seek(pos + timeSeries.getTimeSeries().length);
+        randomAccessFile.write(timeSeries.getTimeStamp());
+        randomAccessFile.close();
+        return pos;
     }
 
     public static void deleteFile(String fileFolder, FileData fileData) {

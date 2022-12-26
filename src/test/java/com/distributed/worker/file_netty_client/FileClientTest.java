@@ -24,6 +24,7 @@ public class FileClientTest {
         MyMessage myMessage = MsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
         System.out.println(file.getAbsolutePath() + " " + file.getName() + " " + file.length());
 
+
         channelFuture.channel().writeAndFlush(myMessage);
         channelFuture.channel().closeFuture().sync(); // 等待关闭
         fileClient.close();

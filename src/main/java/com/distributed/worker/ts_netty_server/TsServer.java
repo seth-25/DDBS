@@ -1,20 +1,19 @@
-package com.distributed.worker.instruct_netty_server;
+package com.distributed.worker.ts_netty_server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class InstructServer extends Thread{
+public class TsServer extends Thread{
+
     private final int PORT;
+
     private EventLoopGroup bossGroup = new NioEventLoopGroup();
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
     private Channel channel;
 
-    public InstructServer(int PORT) {
+    public TsServer(int PORT) {
         this.PORT = PORT;
     }
 
@@ -26,7 +25,7 @@ public class InstructServer extends Thread{
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.AUTO_READ, true)
-                    .childHandler(new InstructServerChannelInitializer());
+                    .childHandler(new TsServerChannelInitializer());
 
             channelFuture = bootstrap.bind(PORT).syncUninterruptibly();
 
@@ -38,9 +37,9 @@ public class InstructServer extends Thread{
         }
         finally {
             if (null != channelFuture && channelFuture.isSuccess()) {
-                System.out.println("\tInstruct服务端启动成功");
+                System.out.println("\tTs服务端启动成功");
             } else {
-                System.out.println("\tInstruct服务端启动失败");
+                System.out.println("\tTs服务端启动失败");
             }
         }
     }

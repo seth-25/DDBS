@@ -43,7 +43,7 @@ public class FileClientHandler extends ChannelInboundHandlerAdapter {
                 if (myMessageStep == Constants.TransferStep.FILE_RESPONSE) {
                     if (fileInfo.getStatus() == Constants.FileStatus.COMPLETE) {
                         ctx.flush();
-                        ctx.close();
+                        ctx.close();    // 关闭客户端
                         return;
                     }
                     FileData fileData = FileUtil.readFile(fileInfo.getFilePath(), fileInfo.getFileType(), fileInfo.getReadPosition());

@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 public class Sax implements Comparable<Sax>{
     private byte[] data;
     private byte[] p;
+    private byte[] timeStamp;
     public Sax(byte[] sax, int dataSize, int pointerSize) {
         this.data = new byte[dataSize];
         this.p = new byte[pointerSize];
@@ -12,8 +13,13 @@ public class Sax implements Comparable<Sax>{
         System.arraycopy(sax, dataSize, this.p, 0, pointerSize);
     }
 
-    public Sax(byte[] sax, int dataSize) {
-        this.data = sax;
+    public Sax(byte[] saxData) {
+        this.data = saxData;
+    }
+    
+    public Sax(byte[] saxData, byte[] p) {
+        this.data = saxData;
+        this.p = p;
     }
 
     public byte[] getData(){
@@ -24,12 +30,20 @@ public class Sax implements Comparable<Sax>{
         return p;
     }
 
-    public byte[] getSax() {
-        byte[] sax = new byte[data.length + p.length];
-        System.arraycopy(data, 0, sax, 0, data.length);
-        System.arraycopy(p, 0, sax, data.length, p.length);
-        return sax;
+    public void setTimeStamp(byte[] timeStamp) {
+        this.timeStamp = timeStamp;
     }
+
+    public byte[] getTimeStamp() {
+        return timeStamp;
+    }
+
+//    public byte[] getSax() {
+//        byte[] sax = new byte[data.length + p.length];
+//        System.arraycopy(data, 0, sax, 0, data.length);
+//        System.arraycopy(p, 0, sax, data.length, p.length);
+//        return sax;
+//    }
 
     public int getSaxLength() {
         return data.length;

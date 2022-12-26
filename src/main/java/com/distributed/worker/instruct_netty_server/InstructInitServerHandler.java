@@ -1,6 +1,6 @@
 package com.distributed.worker.instruct_netty_server;
 
-import com.distributed.worker.action.InitAction;
+import com.distributed.worker.init.InitAction;
 import com.distributed.domain.*;
 import com.distributed.util.CacheUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,17 +14,17 @@ import java.util.TreeMap;
 public class InstructInitServerHandler extends SimpleChannelInboundHandler<InstructInit> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("--------------------");
+        System.out.println("\t--------------------");
         SocketChannel channel = (SocketChannel) ctx.channel();
-        System.out.println("连接信息：有1个客户端连接到本服务端。channelId：" + channel.id());
-        System.out.println("客户端连接IP和Port：" + channel.remoteAddress());
+        System.out.println("\t连接信息：有1个客户端连接到本服务端。channelId：" + channel.id());
+        System.out.println("\t客户端连接IP和Port：" + channel.remoteAddress());
 
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("客户端断开连接：" + ctx.channel().remoteAddress());
-        System.out.println("--------------------");
+        System.out.println("\t客户端断开连接：" + ctx.channel().remoteAddress());
+        System.out.println("\t********************");
     }
 
 
@@ -32,18 +32,25 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
     protected void channelRead0(ChannelHandlerContext ctx, InstructInit instructInit) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
         String clientHostName = channel.remoteAddress().getHostName();
-        System.out.println("客户端信息" + instructInit.getInstruction() + " " + instructInit.getDataObject());
+        System.out.println("\t客户端信息" + instructInit.getInstruction());
         String instructionStr = instructInit.getInstruction();
         switch (instructionStr) {
             case Constants.InstructionType.SEND_SAX_STATISTIC:    // 给Master发送SAX值个数统计
                 String hostName = (String) instructInit.getDataObject();    // Master的hostname
                 InitAction.sendSaxStatics(hostName);
                 break;
-            case Constants.InstructionType.SAX_RANGES:
+            case Constants.InstructionType.SAX_RANGES:  //  收到Master发送的sax范围，向各Worker分发sax
                 if (!(instructInit.getDataObject() instanceof TreeMap))
                     throw new RuntimeException("instructInit 类型错误");
-                CacheUtil.workerRanges = (TreeMap<String, Pair<byte[],byte[]>>) instructInit.getDataObject();
+                CacheUtil.workerSaxRanges = (TreeMap<String, Pair<byte[],byte[]>>) instructInit.getDataObject();
                 InitAction.sendSax();
+                break;
+            case Constants.InstructionType.TS_RANGES:   // 收到Master发送的ts范围，向各Worker分发ts
+                if (!(instructInit.getDataObject() instanceof TreeMap))
+                    throw new RuntimeException("instructInit 类型错误");
+                CacheUtil.timeStampRanges = (TreeMap<String, Pair<Integer, Integer>>) instructInit.getDataObject();
+                // todo
+                // InitAction.sendTs(); //
                 break;
             case Constants.InstructionType.SEND_SAX:
                 if (!(instructInit.getDataObject() instanceof ArrayList))
@@ -51,6 +58,7 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
                 ArrayList<Sax> saxes = (ArrayList<Sax>) instructInit.getDataObject();
                 InitAction.putSax(saxes);
                 break;
+
         }
     }
 

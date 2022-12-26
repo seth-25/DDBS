@@ -12,5 +12,6 @@ public class InstructClientChannelInitializer extends ChannelInitializer<SocketC
         socketChannel.pipeline().addLast(new InstructionObjEncoder());
         // 在管道中添加接收数据实现方法
         socketChannel.pipeline().addLast(new InstructInitClientHandler());
+        socketChannel.pipeline().addLast(new InstructRunClientHandler());
     }
 }

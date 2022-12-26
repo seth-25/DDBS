@@ -36,9 +36,9 @@ public class InstructClient {
         }
         finally {
             if (null != channelFuture && channelFuture.isSuccess()) {
-                System.out.println("客户端启动成功");
+                System.out.println("\t\tInstruct客户端启动成功");
             } else {
-                System.out.println("客户端启动失败");
+                System.out.println("\t\tInstruct客户端启动失败");
             }
         }
         return channelFuture;
