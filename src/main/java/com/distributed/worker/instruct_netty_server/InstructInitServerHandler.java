@@ -50,7 +50,7 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
                     throw new RuntimeException("instructInit 类型错误");
                 CacheUtil.timeStampRanges = (TreeMap<String, Pair<Integer, Integer>>) instructInit.getDataObject();
                 // todo
-                // InitAction.sendTs(); //
+//                 InitAction.sendTs();
                 break;
             case Constants.InstructionType.SEND_SAX:
                 if (!(instructInit.getDataObject() instanceof ArrayList))

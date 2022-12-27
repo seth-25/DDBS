@@ -43,8 +43,8 @@ public class InstructRunServerHandler extends SimpleChannelInboundHandler<Instru
             case Constants.InstructionType.SEND_SAX: // worker收到sax，存到数据库中
                 if (!(instructRun.getDataObject() instanceof ArrayList))
                     throw new RuntimeException("instructRun 类型错误");
-                Sax sax = (Sax) instructRun.getDataObject();
-                InsertAction.putSax(sax);
+                ArrayList<Sax> saxList = (ArrayList<Sax>) instructRun.getDataObject();
+                InsertAction.putSax(saxList);
                 break;
 
         }

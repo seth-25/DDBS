@@ -1,11 +1,15 @@
 package com.distributed.domain;
 
 public class TimeSeries {
-    private byte[] timeSeries;
-    private byte[] timeStamp;
+    private byte[] timeSeriesData;
+    private byte[] timeStamp;   // 小端存储的long
 
-    public byte[] getTimeSeries() {
-        return timeSeries;
+    public TimeSeries(byte[] timeSeriesData, byte[] timeStamp) {
+        this.timeSeriesData = timeSeriesData;
+        this.timeStamp = timeStamp;
+    }
+    public byte[] getTimeSeriesData() {
+        return timeSeriesData;
     }
 
     public byte[] getTimeStamp() {

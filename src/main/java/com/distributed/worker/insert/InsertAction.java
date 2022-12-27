@@ -1,10 +1,7 @@
 package com.distributed.worker.insert;
 
 import com.distributed.domain.*;
-import com.distributed.util.CacheUtil;
-import com.distributed.util.FileUtil;
-import com.distributed.util.InstructUtil;
-import com.distributed.util.TsUtil;
+import com.distributed.util.*;
 import com.distributed.worker.instruct_netty_client.InstructClient;
 import io.netty.channel.ChannelFuture;
 import javafx.util.Pair;
@@ -71,16 +68,9 @@ public class InsertAction {
         ArrayList<Sax> saxes = new ArrayList<>();
         for (TimeSeries timeSeries : timeSeriesList) {
             long offset = FileUtil.writeFile(Parameters.tsFolder, timeSeries);
-//             leveldb接口 tosax(timeSeries);
-            byte[] saxData = new byte[16];  // = 接口返回的
-            byte p0 = (byte) TsUtil.computeHash(timeSeries);    // todo 检查
-            byte[] p = new byte[Parameters.saxPointerSize];
-            p[0] = p0;
-            for (int i = 1; i < Parameters.saxPointerSize; i ++ ) {
-                p[i] = (byte) (offset >> (i - 1) * 8);  // 小端 从long的低位开始截断，放在地址低的地方
-            }
-            Sax sax = new Sax(saxData, p);
-            sax.setTimeStamp(timeSeries.getTimeStamp());
+//             leveldb接口 tosax(timeSeries); todo
+            byte[] saxData = DBUtil.db.saxDataFromTs(timeSeries.getTimeSeriesData());
+            Sax sax = new Sax(saxData, (byte) TsUtil.computeHash(timeSeries), SaxUtil.createPointerOffset(offset), timeSeries.getTimeStamp());
             saxes.add(sax);
         }
         return saxes;
@@ -124,7 +114,22 @@ public class InsertAction {
 //        countDownLatch.await(); //  等待所有线程结束
     }
 
-    public static void putSax(Sax sax) {
-        // leveldb 接口
+    public static void putSax(ArrayList<Sax> saxes) throws InterruptedException {
+        final int taskCount = saxes.size();    // 任务总数
+        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
+        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
+        for (Sax sax: saxes) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    // leveldb 接口
+                    DBUtil.db.put(sax.getLeafTimeKeys());
+                    countDownLatch.countDown();
+                }
+            };
+            newFixedThreadPool.execute(runnable);
+        }
+        countDownLatch.await(); //  等待所有线程结束
+        System.out.println("sax存储完成");
     }
 }

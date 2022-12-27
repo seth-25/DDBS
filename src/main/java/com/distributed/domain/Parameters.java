@@ -6,11 +6,12 @@ public class Parameters {
     public static int numThread = 4;
 
 
-    public static final int saxDataSize = 16; // sax中数据大小
-    public static final int saxPointerSize = 8; // sax中指针的大小
+    public static final int saxDataSize = 8; // sax中数据大小
+    public static final int saxPointerSize = 8; // sax中指针的大小,1字节p_hash+7字节p_offset
     public static final int saxSize = saxDataSize + saxPointerSize; // 一条sax大小多少字节
 
-    public static final int timeSeriesDataSize = 256 * 4;   // 时间序列的大小
+//    public static final int timeSeriesDataSize = 256 * 4;   // 时间序列的大小
+    public static final int timeSeriesDataSize = 5;   // 时间序列的大小
     public static final int timeStampSize = 8; // 时间戳大小
     public static final int tsSize = timeSeriesDataSize + timeStampSize;
     public static final int tsHash = 256;   // 时间戳哈希取余大小
@@ -24,9 +25,9 @@ public class Parameters {
         public static final String countSaxPath = "./count_sax/"; // 统计sax值的个数存放位置
     }
     public static class MemorySort {
-        public static final int readSize = saxSize * 100000; // 读取文件时一次读取字节数
-        public static final int writeSize = saxSize * 100000; // 写文件时一次写出字节数
-        public static final String inputFolderPath = "./sax_data/"; // sax存放位置
+        public static final int readSize = tsSize * 10000; // 读取文件时一次读取字节数
+        public static final int writeSize = tsSize * 10000; // 写文件时一次写出字节数
+        public static final String inputFolderPath = "./ts_init/"; // 初始化ts存放位置
         public static final String memorySortPath = "./memory_sort_data/"; // 内存排序后的sax存放位置
 
     }

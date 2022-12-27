@@ -1,4 +1,4 @@
-package com.distributed.worker.sort;
+package com.distributed.worker.init;
 
 import java.io.IOException;
 

@@ -4,7 +4,7 @@ import com.distributed.domain.Constants;
 import com.distributed.domain.Parameters;
 import com.distributed.util.CacheUtil;
 //import com.distributed.worker.sort.MergeSort;
-import com.distributed.worker.sort.MemorySort;
+import com.distributed.worker.init.MemorySort;
 import org.apache.zookeeper.CreateMode;
 
 import java.io.IOException;
@@ -54,6 +54,7 @@ public class Worker extends Thread{
         // worker启动
         openWorker();
 
+        // 初始化
         // 初始化数据较少，用内存排序
         try {
 //            localMergeSort();
