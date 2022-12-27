@@ -8,6 +8,7 @@ import com.distributed.util.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MemorySort {
     private ArrayList<Sax> saxes = new ArrayList<>();
@@ -52,9 +53,9 @@ public class MemorySort {
             TimeSeries timeSeries = new TimeSeries(tsData, timeStamp);
 
             // ts转化sax接口 todo
-            byte[] saxData = DBUtil.db.saxDataFromTs(tsData);
-//            byte[] saxData = new byte[Parameters.saxDataSize];
-//            System.out.println("data" + " "  + Arrays.toString(tsData));
+            byte[] saxData = DBUtil.dataBase.saxt_from_ts(tsData);
+            System.out.println("sax " + saxData.length);
+            System.out.println("saxData" + " "  + Arrays.toString(saxData));
 //            System.out.println("timeStamp" + " "  +TsUtil.bytesToLong(timeStamp));
             Sax sax = new Sax(saxData, (byte) TsUtil.computeHash(timeSeries), SaxUtil.createPointerOffset(file_offset), timeStamp);
             saxes.add(sax);

@@ -8,6 +8,7 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -69,7 +70,7 @@ public class InsertAction {
         for (TimeSeries timeSeries : timeSeriesList) {
             long offset = FileUtil.writeFile(Parameters.tsFolder, timeSeries);
 //             leveldb接口 tosax(timeSeries); todo
-            byte[] saxData = DBUtil.db.saxDataFromTs(timeSeries.getTimeSeriesData());
+            byte[] saxData = DBUtil.dataBase.saxt_from_ts(timeSeries.getTimeSeriesData());
             Sax sax = new Sax(saxData, (byte) TsUtil.computeHash(timeSeries), SaxUtil.createPointerOffset(offset), timeSeries.getTimeStamp());
             saxes.add(sax);
         }
@@ -122,8 +123,8 @@ public class InsertAction {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    // leveldb 接口
-                    DBUtil.db.put(sax.getLeafTimeKeys());
+                    // leveldb 接口 todo
+                    DBUtil.dataBase.put(sax.getLeafTimeKeys());
                     countDownLatch.countDown();
                 }
             };

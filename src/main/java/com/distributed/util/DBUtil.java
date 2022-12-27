@@ -1,7 +1,9 @@
 package com.distributed.util;
 
-import com.distributed.DB;
+//import com.distributed.DB;
+
+import leveldb_sax.db;
 
 public class DBUtil {
-    public static DB db = new DB();
+    public static db dataBase = new db();
 }

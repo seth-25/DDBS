@@ -11,7 +11,7 @@ import com.distributed.worker.instruct_netty_server.InstructServer;
 
 public class Main {
     public static void main(String[] args) {
-        DBUtil.db.open("./db_data");
+
         Thread worker_thread = new Worker(CoordinatorUtil.coordinator);
         worker_thread.start();
 
