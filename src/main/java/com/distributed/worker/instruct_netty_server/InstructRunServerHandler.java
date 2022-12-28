@@ -48,12 +48,13 @@ public class InstructRunServerHandler extends SimpleChannelInboundHandler<Instru
                 break;
 
         }
+        ctx.writeAndFlush(new InstructRun("Worker服务端成功接收指令"));
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
 //        System.out.println("fileInfoMap: " + CacheUtil.fileInfoMap);
-        ctx.writeAndFlush(new InstructRun("accept"));
+
     }
 
     @Override

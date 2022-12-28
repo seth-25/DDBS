@@ -1,17 +1,8 @@
 package com.distributed.domain;
 
-public class MyMessage {
-    private int type;
+public class FileMessage {
     private int step;
     private Object dataObject;
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
 
     public int getStep() {
         return step;

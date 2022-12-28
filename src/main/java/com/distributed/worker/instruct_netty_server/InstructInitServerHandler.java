@@ -49,8 +49,7 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
                 if (!(instructInit.getDataObject() instanceof TreeMap))
                     throw new RuntimeException("instructInit 类型错误");
                 CacheUtil.timeStampRanges = (TreeMap<String, Pair<Integer, Integer>>) instructInit.getDataObject();
-                // todo
-//                 InitAction.sendTs();
+                 InitAction.sendTs();
                 break;
             case Constants.InstructionType.SEND_SAX:
                 if (!(instructInit.getDataObject() instanceof ArrayList))
@@ -58,14 +57,20 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
                 ArrayList<Sax> saxes = (ArrayList<Sax>) instructInit.getDataObject();
                 InitAction.putSax(saxes);
                 break;
-
+            case Constants.InstructionType.SEND_TS:
+                if (!(instructInit.getDataObject() instanceof ArrayList))
+                    throw new RuntimeException("instructInit 类型错误");
+                ArrayList<TimeSeries> timeSeriesList = (ArrayList<TimeSeries>) instructInit.getDataObject();
+                InitAction.putTs(timeSeriesList);
+                break;
         }
+        ctx.writeAndFlush(new InstructInit("Worker服务端成功接受指令"));
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
 //        System.out.println("fileInfoMap: " + CacheUtil.fileInfoMap);
-        ctx.writeAndFlush(new InstructInit("accept"));
+
     }
 
     @Override

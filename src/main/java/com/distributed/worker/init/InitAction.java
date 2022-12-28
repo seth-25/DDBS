@@ -9,6 +9,7 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -75,12 +76,23 @@ public class InitAction {
         System.out.println("发送sax完成");
         CacheUtil.initSaxes = null;
     }
-
-
-    public static void putSax(ArrayList<Sax> saxes) {
+    // Worker收到其他Worker发来的Sax,存入数据库中
+    public static void putSax(ArrayList<Sax> saxes) throws InterruptedException {
+        final int taskCount = saxes.size();    // 任务总数
+        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
+        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
         for (Sax sax: saxes) {
-            // levelDB, put接口
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    DBUtil.dataBase.put(sax.getLeafTimeKeys());
+                    countDownLatch.countDown();
+                }
+            };
+            newFixedThreadPool.execute(runnable);
         }
+        countDownLatch.await(); //  等待所有线程结束
+
         if (CacheUtil.workerState.equals(Constants.WorkerStatus.INIT)) {
             CacheUtil.workerState = Constants.WorkerStatus.HAS_PUT_SAX;
         }
@@ -88,11 +100,54 @@ public class InitAction {
             CoordinatorUtil.coordinator.setNode(Parameters.Zookeeper.workerPath, Constants.WorkerStatus.RUNNING);
             CacheUtil.workerState = Constants.WorkerStatus.RUNNING;
         }
+        System.out.println("存储sax完成");
     }
 
-    public static void putTs() {
+    // Worker向Worker发送Ts
+    public static void sendTs() throws InterruptedException {
+        final int taskCount = CacheUtil.timeStampRanges.size();    // 任务总数
+        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
+        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
+        for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    ArrayList<TimeSeries> timeSeriesList = new ArrayList<>();
+                    int left = entry.getValue().getKey();
+                    int right = entry.getValue().getValue();
+                    for (TimeSeries timeSeries: CacheUtil.initTs) {
+                        int hash = TsUtil.computeHash(timeSeries);
+                        if (left <= hash && hash <= right) {
+                            timeSeriesList.add(timeSeries);
+                        }
+                    }
+                    InstructClient instructClient = new InstructClient(entry.getKey(), Parameters.InstructNettyClient.port);
+                    ChannelFuture channelFuture = instructClient.start();
+
+                    InstructInit instructInit = InstructUtil.buildInstructInit(Constants.InstructionType.SEND_TS, timeSeriesList);
+                    channelFuture.channel().writeAndFlush(instructInit);
+                    try {
+                        channelFuture.channel().closeFuture().sync(); // 等待关闭
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    instructClient.close();
+                    countDownLatch.countDown();
+                }
+            };
+            newFixedThreadPool.execute(runnable);
+        }
+        countDownLatch.await(); //  等待所有线程结束
+        System.out.println("发送ts完成");
+        CacheUtil.initTs = null;
+    }
 
 
+
+    public static void putTs(ArrayList<TimeSeries> timeSeriesList) throws IOException {
+        for (TimeSeries timeSeries : timeSeriesList) {
+            long offset = FileUtil.writeFile(Parameters.tsFolder, timeSeries);
+        }
         if (CacheUtil.workerState.equals(Constants.WorkerStatus.INIT)) {
             CacheUtil.workerState = Constants.WorkerStatus.HAS_PUT_TS;
         }
@@ -100,6 +155,7 @@ public class InitAction {
             CoordinatorUtil.coordinator.setNode(Parameters.Zookeeper.workerPath, Constants.WorkerStatus.RUNNING);
             CacheUtil.workerState = Constants.WorkerStatus.RUNNING;
         }
+        System.out.println("存储Ts完成");
     }
 
     public static void sendFile(String hostName) throws IOException, InterruptedException {
@@ -118,10 +174,10 @@ public class InitAction {
                     FileClient fileClient = new FileClient(hostName, Parameters.FileNettyClient.port);
                     ChannelFuture channelFuture = fileClient.start();
 
-                    MyMessage myMessage = MsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
+                    FileMessage fileMessage = FileMsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
                     System.out.println("传输文件: " + file.getAbsolutePath());
 
-                    channelFuture.channel().writeAndFlush(myMessage);
+                    channelFuture.channel().writeAndFlush(fileMessage);
                     try {
                         channelFuture.channel().closeFuture().sync(); // 等待关闭
                     } catch (InterruptedException e) {

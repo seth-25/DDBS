@@ -5,7 +5,7 @@ public class db {
         System.loadLibrary("leveldbj");
     }
     //sax
-    public native byte[] saxt_from_ts(byte[] ts);
+    public native void saxt_from_ts(byte[] ts, byte[] saxt);
 
     //db
     public native void open(String dbname);

@@ -1,9 +1,9 @@
 package com.distributed.worker.file_netty_client;
 
 import com.distributed.domain.Constants;
-import com.distributed.domain.MyMessage;
+import com.distributed.domain.FileMessage;
 import com.distributed.domain.Parameters;
-import com.distributed.util.MsgUtil;
+import com.distributed.util.FileMsgUtil;
 import io.netty.channel.ChannelFuture;
 import org.junit.Test;
 
@@ -21,11 +21,11 @@ public class FileClientTest {
         ChannelFuture channelFuture = fileClient.start();
 
         File file = new File("./test.txt");
-        MyMessage myMessage = MsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
+        FileMessage fileMessage = FileMsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
         System.out.println(file.getAbsolutePath() + " " + file.getName() + " " + file.length());
 
 
-        channelFuture.channel().writeAndFlush(myMessage);
+        channelFuture.channel().writeAndFlush(fileMessage);
         channelFuture.channel().closeFuture().sync(); // 等待关闭
         fileClient.close();
 //        //启动客户端

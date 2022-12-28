@@ -2,7 +2,7 @@ package com.distributed.worker.file_netty_client;
 
 import com.distributed.domain.*;
 import com.distributed.util.FileUtil;
-import com.distributed.util.MsgUtil;
+import com.distributed.util.FileMsgUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
@@ -24,38 +24,26 @@ public class FileClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!(msg instanceof MyMessage)) return;
+        if (!(msg instanceof FileMessage)) return;
 
-        MyMessage myMessage = (MyMessage)msg;
+        FileMessage fileMessage = (FileMessage)msg;
 
-        int myMessageType = myMessage.getType();
-        int myMessageStep = myMessage.getStep();
+        int myMessageStep = fileMessage.getStep();
 
-        switch(myMessageType) {
-            case Constants.TransferType.INSTRUCT:
-                InstructInit instructInit = (InstructInit) myMessage.getDataObject();
-                System.out.println("服务端指令：" + instructInit.getInstruction());
-                break;
+        FileInfo fileInfo = (FileInfo) fileMessage.getDataObject();
 
-            case Constants.TransferType.FILE:
-                FileInfo fileInfo = (FileInfo) myMessage.getDataObject();
-
-                if (myMessageStep == Constants.TransferStep.FILE_RESPONSE) {
-                    if (fileInfo.getStatus() == Constants.FileStatus.COMPLETE) {
-                        ctx.flush();
-                        ctx.close();    // 关闭客户端
-                        return;
-                    }
-                    FileData fileData = FileUtil.readFile(fileInfo.getFilePath(), fileInfo.getFileType(), fileInfo.getReadPosition());
-                    ctx.writeAndFlush(MsgUtil.buildFileData(fileData));
-                    System.out.println("向客户端传送文件" + fileData.getFileName() + "切片:" + fileData.getBeginPos() + ":" +  fileData.getEndPos());
-                }
-                break;
-            default:
-                break;
-
-
+        if (myMessageStep == Constants.TransferStep.FILE_RESPONSE) {
+            if (fileInfo.getStatus() == Constants.FileStatus.COMPLETE) {
+                ctx.flush();
+                ctx.close();    // 关闭客户端
+                return;
+            }
+            FileData fileData = FileUtil.readFile(fileInfo.getFilePath(), fileInfo.getFileType(), fileInfo.getReadPosition());
+            ctx.writeAndFlush(FileMsgUtil.buildFileData(fileData));
+            System.out.println("向客户端传送文件" + fileData.getFileName() + "切片:" + fileData.getBeginPos() + ":" +  fileData.getEndPos());
         }
+
+
     }
 
     @Override

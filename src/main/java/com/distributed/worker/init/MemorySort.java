@@ -40,6 +40,17 @@ public class MemorySort {
 //        return saxes;
 //    }
 
+
+    public static float bytesToFloat(byte[] bytes) {
+        int f = 0;
+        for (int i = 0; i < 4; i ++ ) {
+            f <<= 8;
+            f |= (bytes[4 - 1 - i] & 0xff);  // 小端
+        }
+        return Float.intBitsToFloat(f);
+    }
+
+
     private ArrayList<Sax> createTsAndSax(byte[] arrays) {
         int array_offset = 0;
         while (array_offset < arrays.length) {
@@ -49,14 +60,13 @@ public class MemorySort {
             System.arraycopy(arrays, array_offset + Parameters.timeSeriesDataSize, timeStamp, 0, Parameters.timeStampSize);
             array_offset += Parameters.tsSize;
             file_offset += Parameters.tsSize;
-
             TimeSeries timeSeries = new TimeSeries(tsData, timeStamp);
+            CacheUtil.initTs.add(timeSeries);   // 初始化时ts较小,先放内存
 
-            // ts转化sax接口 todo
-            byte[] saxData = DBUtil.dataBase.saxt_from_ts(tsData);
-            System.out.println("sax " + saxData.length);
-            System.out.println("saxData" + " "  + Arrays.toString(saxData));
-//            System.out.println("timeStamp" + " "  +TsUtil.bytesToLong(timeStamp));
+
+            // ts转化sax接口
+            byte[] saxData = new byte[Parameters.saxDataSize];
+            DBUtil.dataBase.saxt_from_ts(tsData, saxData);
             Sax sax = new Sax(saxData, (byte) TsUtil.computeHash(timeSeries), SaxUtil.createPointerOffset(file_offset), timeStamp);
             saxes.add(sax);
             addCnt(sax.toString()); // 统计这个sax的值出现几次
@@ -93,6 +103,7 @@ public class MemorySort {
             }
             reader.close();
         }
+
         saxes.sort(Sax::compareTo);  // 内存排序
         writeSax(saxes);
 //        writeSaxFile(String.valueOf(cntFile), saxes, Parameters.MemorySort.memorySortPath); // 写入文件

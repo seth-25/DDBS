@@ -12,10 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CacheUtil {
 
-
-
     public static Map<String, FileInfo> fileInfoMap = new ConcurrentHashMap<>();
     public static TreeMap<String, Long> cntInitSaxes = new TreeMap<>(); // 初始化时统计各种值的sax的个数
+    public static ArrayList<TimeSeries> initTs = new ArrayList<>();
     public static ArrayList<Sax> initSaxes = new ArrayList<>(); // 初始化时的sax
     public static TreeMap<String, Pair<byte[], byte[]>> workerSaxRanges = new TreeMap<>(); // 各worker的hostname和负责的Sax范围
 

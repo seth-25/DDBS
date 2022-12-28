@@ -18,13 +18,15 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
         SocketChannel channel = (SocketChannel) ctx.channel();
         String clientHostName = channel.remoteAddress().getHostName();
         TimeSeries timeSeries = (TimeSeries) msg;
-        System.out.println("收到ts,时间戳: " + TsUtil.bytesToLong(timeSeries.getTimeStamp()));
+        System.out.println("\t收到ts,时间戳: " + TsUtil.bytesToLong(timeSeries.getTimeStamp()));
         InsertAction.tempStoreTs(timeSeries);
+
+        ctx.writeAndFlush(new String("Worker服务端成功接收ts"));
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush(new String("服务端成功接收ts"));
+
     }
 
     @Override

@@ -65,12 +65,13 @@ public class InsertAction {
 
 
     public static ArrayList<Sax> tsToSax(ArrayList<TimeSeries> timeSeriesList) throws InterruptedException, IOException {
-        System.out.println("worker收到ts,转化成sax");
+        System.out.println("worker收到ts,将ts写入文件,并转化成sax");
         ArrayList<Sax> saxes = new ArrayList<>();
         for (TimeSeries timeSeries : timeSeriesList) {
             long offset = FileUtil.writeFile(Parameters.tsFolder, timeSeries);
 //             leveldb接口 tosax(timeSeries); todo
-            byte[] saxData = DBUtil.dataBase.saxt_from_ts(timeSeries.getTimeSeriesData());
+            byte[] saxData = new byte[Parameters.saxDataSize];
+            DBUtil.dataBase.saxt_from_ts(timeSeries.getTimeSeriesData(), saxData);
             Sax sax = new Sax(saxData, (byte) TsUtil.computeHash(timeSeries), SaxUtil.createPointerOffset(offset), timeSeries.getTimeStamp());
             saxes.add(sax);
         }
