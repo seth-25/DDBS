@@ -1,7 +1,7 @@
 package com.distributed.domain.protocol;
 
 import com.distributed.domain.InstructInit;
-import com.distributed.domain.InstructRun;
+import com.distributed.domain.InstructTs;
 
 
 import java.util.Map;
@@ -19,7 +19,7 @@ public class PacketClazzMap {
 
     static {
         packetTypeMap.put(Command.init, InstructInit.class);
-        packetTypeMap.put(Command.run, InstructRun.class);
+//        packetTypeMap.put(Command.run, InstructRun.class);
 //        packetTypeMap.put(Command.Demo03, MsgDemo03.class);
     }
 

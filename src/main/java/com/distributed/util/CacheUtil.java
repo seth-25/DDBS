@@ -3,9 +3,12 @@ package com.distributed.util;
 import com.distributed.domain.FileInfo;
 import com.distributed.domain.Sax;
 import com.distributed.domain.TimeSeries;
+import com.distributed.worker.ts_netty_client.TsClient;
+import io.netty.channel.ChannelFuture;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,8 +22,13 @@ public class CacheUtil {
     public static TreeMap<String, Pair<byte[], byte[]>> workerSaxRanges = new TreeMap<>(); // 各worker的hostname和负责的Sax范围
 
     public static TreeMap<String, Pair<Integer, Integer>> timeStampRanges = new TreeMap<>();  // 各worker的hostname和负责的时间序列的时间戳范围
-    public static ArrayList<TimeSeries> tempTsList = new ArrayList<>(); // 暂存接收的ts
+
+    public static Map<String, TsClient> InsertWorkerChannel = new HashMap<>();
 
     public static String workerState;   // 当前worker的状态
+
+
+
+    public static ArrayList<Sax> saxes = new ArrayList<>();
 
 }

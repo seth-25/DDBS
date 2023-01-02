@@ -41,11 +41,11 @@ public class Constants {
         public static final String SAX_STATISTIC = "sax statistic"; // Worker向Master请求发送的sax统计
         public static final String SAX_RANGES = "sax ranges"; // Master向Worker请求发送sax
         public static final String TS_RANGES = "ts ranges"; // Master向Worker发送ts范围
+
         public static final String SEND_SAX = "send sax"; // Worker向Worker发送sax
         public static final String SEND_TS = "send ts"; // Worker向Worker发送sax
+
+        public static final String INSERT_TS = "insert ts";   // Client向客户端发送TS
     }
 
-    public static class TsType {
-
-    }
 }

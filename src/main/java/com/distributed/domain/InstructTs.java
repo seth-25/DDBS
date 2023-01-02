@@ -3,11 +3,11 @@ package com.distributed.domain;
 import com.distributed.domain.protocol.Command;
 import com.distributed.domain.protocol.Packet;
 
-public class InstructRun extends Packet {
+public class InstructTs{
     private String instruction;
     private Object dataObject;
 
-    public InstructRun(String instruction) {
+    public InstructTs(String instruction) {
         this.instruction = instruction;
     }
 
@@ -25,10 +25,5 @@ public class InstructRun extends Packet {
 
     public Object getDataObject() {
         return dataObject;
-    }
-
-    @Override
-    public Byte getCommand() {
-        return Command.run;
     }
 }

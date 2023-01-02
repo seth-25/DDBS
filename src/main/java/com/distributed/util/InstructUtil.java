@@ -1,7 +1,7 @@
 package com.distributed.util;
 
 import com.distributed.domain.InstructInit;
-import com.distributed.domain.InstructRun;
+import com.distributed.domain.InstructTs;
 
 public class InstructUtil {
     public static InstructInit buildInstructInit(String instruction, Object obj) {
@@ -11,9 +11,9 @@ public class InstructUtil {
         return ins;
     }
 
-    public static InstructRun buildInstructRun(String instruction, Object obj) {
+    public static InstructTs buildInstructTs(String instruction, Object obj) {
 
-        InstructRun ins = new InstructRun(instruction);
+        InstructTs ins = new InstructTs(instruction);
         ins.setDataObject(obj);
         return ins;
     }
