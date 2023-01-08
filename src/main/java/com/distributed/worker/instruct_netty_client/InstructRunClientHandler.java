@@ -1,11 +1,13 @@
 package com.distributed.worker.instruct_netty_client;
 
+import com.distributed.domain.Constants;
+import com.distributed.domain.InstructRun;
 import com.distributed.domain.InstructTs;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 
-public class InstructRunClientHandler extends SimpleChannelInboundHandler<InstructTs> {
+public class InstructRunClientHandler extends SimpleChannelInboundHandler<InstructRun> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("\t\t--------------------");
@@ -21,9 +23,14 @@ public class InstructRunClientHandler extends SimpleChannelInboundHandler<Instru
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, InstructTs instructTs) throws Exception {
-        System.out.println("\t\t收到服务端消息：" + instructTs.getInstruction());
-
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, InstructRun instructRun) throws Exception {
+        System.out.println("\t\t收到服务端消息：" + instructRun.getInstruction());
+        String instructionStr = instructRun.getInstruction();
+        switch (instructionStr) {
+            case Constants.InstructionType.FINISH:
+                channelHandlerContext.close();
+                break;
+        }
     }
 
     @Override

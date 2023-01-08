@@ -68,7 +68,6 @@
 //        ArrayList<Sax> saxesPerFile = new ArrayList<>();
 //
 //        for (File file: files) {
-//
 //            FileChannelReader reader = new FileChannelReader(file.getPath(), readSize);
 //            while (reader.read() != -1) {
 //                byte[] arrays = reader.getArray();

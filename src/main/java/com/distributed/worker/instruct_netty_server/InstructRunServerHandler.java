@@ -8,7 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 
 import java.util.ArrayList;
 
-public class InstructRunServerHandler extends SimpleChannelInboundHandler<InstructTs> {
+public class InstructRunServerHandler extends SimpleChannelInboundHandler<InstructRun> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("\t--------------------");
@@ -26,11 +26,12 @@ public class InstructRunServerHandler extends SimpleChannelInboundHandler<Instru
 
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, InstructTs instructTs) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, InstructRun instructRun) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
         String clientHostName = channel.remoteAddress().getHostName();
+        System.out.println("\t客户端信息" + instructRun.getInstruction());
+        String instructionStr = instructRun.getInstruction();
 
-        ctx.writeAndFlush(new InstructTs("Worker服务端成功接收指令"));
     }
 
     @Override

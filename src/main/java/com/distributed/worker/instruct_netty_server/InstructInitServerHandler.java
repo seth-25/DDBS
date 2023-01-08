@@ -9,6 +9,7 @@ import io.netty.channel.socket.SocketChannel;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 public class InstructInitServerHandler extends SimpleChannelInboundHandler<InstructInit> {
@@ -42,13 +43,13 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
             case Constants.InstructionType.SAX_RANGES:  //  收到Master发送的sax范围，向各Worker分发sax
                 if (!(instructInit.getDataObject() instanceof TreeMap))
                     throw new RuntimeException("instructInit 类型错误");
-                CacheUtil.workerSaxRanges = (TreeMap<String, Pair<byte[],byte[]>>) instructInit.getDataObject();
+                CacheUtil.workerSaxRanges = (HashMap<String, Pair<byte[],byte[]>>) instructInit.getDataObject();
                 InitAction.sendSax();
                 break;
             case Constants.InstructionType.TS_RANGES:   // 收到Master发送的ts范围，向各Worker分发ts
                 if (!(instructInit.getDataObject() instanceof TreeMap))
                     throw new RuntimeException("instructInit 类型错误");
-                CacheUtil.timeStampRanges = (TreeMap<String, Pair<Integer, Integer>>) instructInit.getDataObject();
+                CacheUtil.timeStampRanges = (HashMap<String, Pair<Integer, Integer>>) instructInit.getDataObject();
                  InitAction.sendTs();
                 break;
             case Constants.InstructionType.SEND_SAX:

@@ -33,6 +33,8 @@ public class Constants {
 
         public static final String RUNNING = "running"; // 运行中
 
+        public static final String CHANGE_VERSION = "change version"; // 改变版本
+
         public static final String BALANCE = "in balance";
     }
 
@@ -46,6 +48,11 @@ public class Constants {
         public static final String SEND_TS = "send ts"; // Worker向Worker发送sax
 
         public static final String INSERT_TS = "insert ts";   // Client向客户端发送TS
+
+        public static final String SEND_VERSION = "send version"; // worker发送改变的版本
+        public static final String DELETE_IN_VERSION = "delete in version"; // worker删除内存版本
+        public static final String DELETE_OUT_VERSION = "delete out version"; // worker删除外存版本
+        public static final String FINISH = "finish"; // 操作结束
     }
 
 }
