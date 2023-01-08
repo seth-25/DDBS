@@ -43,27 +43,32 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
         System.out.println("\t客户端信息" + instructionStr + " " + Thread.currentThread().getName());
         switch (instructionStr) {
             case Constants.InstructionType.INSERT_TS: // worker收到client的ts，将ts发送到对应worker
-                if (!(instructTs.getDataObject() instanceof TimeSeries))
+                if (!(instructTs.getDataObject() instanceof ArrayList))
                     throw new RuntimeException("instructRun 类型错误");
-                TimeSeries ts = (TimeSeries) instructTs.getDataObject();
-                System.out.println("\t收到ts,时间戳: " + TsUtil.bytesToLong(ts.getTimeStamp()));
+                ArrayList<TimeSeries> clientToWorkerTsList = (ArrayList<TimeSeries>) instructTs.getDataObject();
+//                System.out.println("\t收到ts,时间戳: ");
                 ctx.writeAndFlush(new InstructTs("Worker服务端成功接收Client的ts"));
-                InsertAction.sendTs(ts);
+                InsertAction.tempStoreTs(clientToWorkerTsList);
+                InsertAction.checkStoreTs();
                 break;
             case Constants.InstructionType.SEND_TS: // worker收到worker的ts，转化成sax，再将sax发送到对应worker
-                if (!(instructTs.getDataObject() instanceof TimeSeries))
+                if (!(instructTs.getDataObject() instanceof ArrayList))
                     throw new RuntimeException("instructRun 类型错误");
-                TimeSeries timeSeries = (TimeSeries) instructTs.getDataObject();
-                Sax sax = InsertAction.tsToSax(timeSeries);
+                ArrayList<TimeSeries> workerToWorkerTsList = (ArrayList<TimeSeries>) instructTs.getDataObject();
+//                TimeSeries timeSeries = (TimeSeries) instructTs.getDataObject();
                 ctx.writeAndFlush(new InstructTs("Worker服务端成功接收Worker的ts"));
-                InsertAction.sendSax(sax);
+
+                ArrayList<Sax> saxes = InsertAction.tsToSax(workerToWorkerTsList);
+                InsertAction.tempStoreSax(saxes);
+                InsertAction.checkStoreSax();
+//                InsertAction.sendSax(sax);
                 break;
             case Constants.InstructionType.SEND_SAX: // worker收到sax，存到数据库中
-                if (!(instructTs.getDataObject() instanceof Sax))
+                if (!(instructTs.getDataObject() instanceof ArrayList))
                     throw new RuntimeException("instructRun 类型错误");
-                Sax sax1 = (Sax) instructTs.getDataObject();
+                ArrayList<Sax> saxList = (ArrayList<Sax>) instructTs.getDataObject();
                 ctx.writeAndFlush(new InstructTs("Worker服务端成功接收Worker的sax"));
-                InsertAction.putSax(sax1);
+                InsertAction.putSax(saxList);
                 break;
         }
 

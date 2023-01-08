@@ -46,9 +46,7 @@ public class Parameters {
     public static class Init {
         public static final int numTs = 1000000; // 初始化ts的个数
     }
-    public static class Insert {
-        public static final int numTempTs = 3; // 暂存几个Ts，达到个数后开始发送
-    }
+
     public static class MergeSort {
         public static final String inputFolderPath = "./data/"; // sax存放位置
         public static final String memorySortPath = "./memory_sort_data/"; // 内存排序后的sax存放位置
@@ -62,5 +60,10 @@ public class Parameters {
         public static final String inputFolderPath = "./ts_init/"; // 初始化ts存放位置
         public static final String memorySortPath = "./memory_sort_data/"; // 内存排序后的sax存放位置
 
+    }
+
+    public static class Insert {
+        public static final int batchTrans = 1000; // 一次性发送几个ts/sax
+        public static final int cntTrans = 10; // 几次传输都没向该worker发送ts/sax，则需要向该worker发送
     }
 }
