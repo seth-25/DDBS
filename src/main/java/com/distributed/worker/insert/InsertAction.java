@@ -26,7 +26,7 @@ public class InsertAction {
         }
     }
 
-    public static void tempStoreTs(ArrayList<TimeSeries> tsList) throws InterruptedException { // 暂存ts，达到一定数量则发送给对应worker
+    public static void tempStoreTs(ArrayList<TimeSeries> tsList) throws InterruptedException { // 暂存ts
         final int taskCount = CacheUtil.timeStampRanges.size();    // 任务总数
         CountDownLatch countDownLatch = new CountDownLatch(taskCount);
         for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
@@ -62,10 +62,10 @@ public class InsertAction {
             };
             CacheUtil.newFixedThreadPool.execute(runnable);
         }
-//        countDownLatch.await(); //  等待所有线程结束
+        countDownLatch.await(); //  等待所有线程结束
     }
 
-    public static void checkStoreTs() { // 暂存ts，达到一定数量则发送给对应worker
+    public static void checkStoreTs() throws InterruptedException { // 检查暂存的ts，达到一定数量则发送给对应worker
         final int taskCount = CacheUtil.tempTsList.size();    // 任务总数
         CountDownLatch countDownLatch = new CountDownLatch(taskCount);
         for (Map.Entry<String, ArrayList<TimeSeries>> entry: CacheUtil.tempTsList.entrySet()) {
@@ -78,6 +78,33 @@ public class InsertAction {
                         // 向对应worker发送ts
                         TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
                         InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_TS, tmpTsList);
+                        tsClient.getChannel().writeAndFlush(instructTs);
+
+                        CacheUtil.tempTsList.put(hostName, new ArrayList<>());
+                        CacheUtil.tempTsListCnt.put(hostName, 0);
+                    }
+                    countDownLatch.countDown();
+                }
+            };
+            CacheUtil.newFixedThreadPool.execute(runnable);
+        }
+//        countDownLatch.await(); //  等待所有线程结束
+    }
+
+    public static void finalCheckStoreTs() throws InterruptedException { // 检查暂存的ts，将剩余的ts全部发送
+        System.out.println("最后检查ts");
+        final int taskCount = CacheUtil.tempTsList.size();    // 任务总数
+        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
+        for (Map.Entry<String, ArrayList<TimeSeries>> entry: CacheUtil.tempTsList.entrySet()) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    String hostName = entry.getKey();
+                    ArrayList<TimeSeries> tmpTsList = CacheUtil.tempTsList.get(hostName);
+                    if (tmpTsList != null && tmpTsList.size() > 0) {
+                        // 向对应worker发送ts
+                        TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
+                        InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_TS_FINISH, tmpTsList);
                         tsClient.getChannel().writeAndFlush(instructTs);
 
                         CacheUtil.tempTsList.put(hostName, new ArrayList<>());
@@ -110,7 +137,7 @@ public class InsertAction {
         return saxes;
     }
 
-    public static void tempStoreSax(ArrayList<Sax> saxList) throws InterruptedException { // 暂存ts，达到一定数量则发送给对应worker
+    public static void tempStoreSax(ArrayList<Sax> saxList) throws InterruptedException { // 暂存sax
         final int taskCount = CacheUtil.timeStampRanges.size();    // 任务总数
         CountDownLatch countDownLatch = new CountDownLatch(taskCount);
         for (Map.Entry<String, Pair<byte[], byte[]>> entry: CacheUtil.workerSaxRanges.entrySet()) {
@@ -145,10 +172,10 @@ public class InsertAction {
             };
             CacheUtil.newFixedThreadPool.execute(runnable);
         }
-//        countDownLatch.await(); //  等待所有线程结束
+        countDownLatch.await(); //  等待所有线程结束
     }
 
-    public static void checkStoreSax()  { // 暂存sax，达到一定数量则发送给对应worker
+    public static void checkStoreSax()  { // 检查暂存的sax，达到一定数量则发送给对应worker
         final int taskCount = CacheUtil.tempSaxList.size();    // 任务总数
         CountDownLatch countDownLatch = new CountDownLatch(taskCount);
         for (Map.Entry<String, ArrayList<Sax>> entry: CacheUtil.tempSaxList.entrySet()) {
@@ -159,6 +186,33 @@ public class InsertAction {
                     ArrayList<Sax> tmpSaxList = CacheUtil.tempSaxList.get(hostName);
                     if (tmpSaxList != null && tmpSaxList.size() > Parameters.Insert.batchTrans ||
                             CacheUtil.tempSaxListCnt.get(hostName) >= Parameters.Insert.cntTrans) {
+                        // 向对应worker发送sax
+                        TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
+                        InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_SAX, tmpSaxList);
+                        tsClient.getChannel().writeAndFlush(instructTs);
+
+                        CacheUtil.tempSaxList.put(hostName, new ArrayList<>());
+                        CacheUtil.tempSaxListCnt.put(hostName, 0);
+                    }
+                    countDownLatch.countDown();
+                }
+            };
+            CacheUtil.newFixedThreadPool.execute(runnable);
+        }
+//        countDownLatch.await(); //  等待所有线程结束
+    }
+
+    public static void finalCheckStoreSax()  { // 检查暂存的sax，把剩余的sax全部发送
+        System.out.println("最后检查sax");
+        final int taskCount = CacheUtil.tempSaxList.size();    // 任务总数
+        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
+        for (Map.Entry<String, ArrayList<Sax>> entry: CacheUtil.tempSaxList.entrySet()) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    String hostName = entry.getKey();
+                    ArrayList<Sax> tmpSaxList = CacheUtil.tempSaxList.get(hostName);
+                    if (tmpSaxList != null && tmpSaxList.size() > 0) {
                         // 向对应worker发送sax
                         TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
                         InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_SAX, tmpSaxList);

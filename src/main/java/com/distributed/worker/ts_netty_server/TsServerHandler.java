@@ -1,17 +1,11 @@
 package com.distributed.worker.ts_netty_server;
 
-import com.distributed.domain.Constants;
-import com.distributed.domain.InstructTs;
-import com.distributed.domain.Sax;
-import com.distributed.domain.TimeSeries;
-import com.distributed.util.CacheUtil;
-import com.distributed.util.TsUtil;
+import com.distributed.domain.*;
+import com.distributed.util.InstructUtil;
 import com.distributed.worker.insert.InsertAction;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.util.CharsetUtil;
 
 import java.util.ArrayList;
 
@@ -28,6 +22,7 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+
         System.out.println("\t客户端断开连接：" + ctx.channel().remoteAddress());
         System.out.println("\t********************");
     }
@@ -47,22 +42,36 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
                     throw new RuntimeException("instructRun 类型错误");
                 ArrayList<TimeSeries> clientToWorkerTsList = (ArrayList<TimeSeries>) instructTs.getDataObject();
 //                System.out.println("\t收到ts,时间戳: ");
-                ctx.writeAndFlush(new InstructTs("Worker服务端成功接收Client的ts"));
+                ctx.writeAndFlush(InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS, null));
                 InsertAction.tempStoreTs(clientToWorkerTsList);
                 InsertAction.checkStoreTs();
                 break;
+            case Constants.InstructionType.INSERT_TS_FINISH: // worker收到client的发送ts完成的请求，最后检查没发完的ts
+                ctx.writeAndFlush(InstructUtil.buildInstructTs(Constants.InstructionType.FINISH, null));
+                InsertAction.finalCheckStoreTs();
+                break;
+
             case Constants.InstructionType.SEND_TS: // worker收到worker的ts，转化成sax，再将sax发送到对应worker
                 if (!(instructTs.getDataObject() instanceof ArrayList))
                     throw new RuntimeException("instructRun 类型错误");
                 ArrayList<TimeSeries> workerToWorkerTsList = (ArrayList<TimeSeries>) instructTs.getDataObject();
-//                TimeSeries timeSeries = (TimeSeries) instructTs.getDataObject();
                 ctx.writeAndFlush(new InstructTs("Worker服务端成功接收Worker的ts"));
 
                 ArrayList<Sax> saxes = InsertAction.tsToSax(workerToWorkerTsList);
                 InsertAction.tempStoreSax(saxes);
                 InsertAction.checkStoreSax();
-//                InsertAction.sendSax(sax);
                 break;
+            case Constants.InstructionType.SEND_TS_FINISH: // worker收到worker的ts，转化成sax，再将sax发送到对应worker，最后检查没发完的sax
+                if (!(instructTs.getDataObject() instanceof ArrayList))
+                    throw new RuntimeException("instructRun 类型错误");
+                ArrayList<TimeSeries> workerToWorkerTsListFinal = (ArrayList<TimeSeries>) instructTs.getDataObject();
+                ctx.writeAndFlush(new InstructTs("Worker服务端成功接收Worker最后的ts"));
+
+                ArrayList<Sax> saxesFinal = InsertAction.tsToSax(workerToWorkerTsListFinal);
+                InsertAction.tempStoreSax(saxesFinal);
+                InsertAction.finalCheckStoreSax();
+                break;
+
             case Constants.InstructionType.SEND_SAX: // worker收到sax，存到数据库中
                 if (!(instructTs.getDataObject() instanceof ArrayList))
                     throw new RuntimeException("instructRun 类型错误");

@@ -45,9 +45,11 @@ public class Constants {
         public static final String TS_RANGES = "ts ranges"; // Master向Worker发送ts范围
 
         public static final String SEND_SAX = "send sax"; // Worker向Worker发送sax
-        public static final String SEND_TS = "send ts"; // Worker向Worker发送sax
+        public static final String SEND_TS = "send ts"; // Worker向Worker发送ts
+        public static final String SEND_TS_FINISH = "send ts finish"; // Worker向Worker最后发送ts
 
-        public static final String INSERT_TS = "insert ts";   // Client向客户端发送TS
+        public static final String INSERT_TS = "insert ts";   // Client向Worker发送TS
+        public static final String INSERT_TS_FINISH = "insert ts finish";   // Client发完所有TS
 
         public static final String SEND_VERSION = "send version"; // worker发送改变的版本
         public static final String DELETE_IN_VERSION = "delete in version"; // worker删除内存版本
