@@ -9,7 +9,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class FileServer {
-
     private final int PORT;
     private EventLoopGroup bossGroup = new NioEventLoopGroup();
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
