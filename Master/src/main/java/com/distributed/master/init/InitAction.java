@@ -6,6 +6,7 @@ import com.distributed.domain.Parameters;
 import com.distributed.master.instruct_netty_client.InstructClient;
 import com.distributed.util.CacheUtil;
 import common.util.InstructUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import javafx.util.Pair;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -27,18 +28,19 @@ public class InitAction {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    InstructClient instructionClient = new InstructClient(getWorkerHostName(childData), Parameters.InstructNettyServer.port);
-                    ChannelFuture channelFuture = instructionClient.start();
+//                    InstructClient instructionClient = new InstructClient(getWorkerHostName(childData), Parameters.InstructNettyServer.port);
+//                    ChannelFuture channelFuture = instructionClient.start();
+                    Channel channel = CacheUtil.workerInstructClient.get(getWorkerHostName(childData)).getChannel();
                     InstructInit instructInit = InstructUtil.buildInstructInit(instruct, obj);
                     //发送信息
                     System.out.println("给" + getWorkerHostName(childData) +"发送指令 " + instruct);
-                    channelFuture.channel().writeAndFlush(instructInit);
-                    try {
-                        channelFuture.channel().closeFuture().sync(); // 等待关闭
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    instructionClient.close();
+                    channel.writeAndFlush(instructInit);
+//                    try {
+//                        channel.closeFuture().sync(); // 等待关闭
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    instructionClient.close();
                 }
             };
             newFixedThreadPool.execute(runnable);
@@ -53,7 +55,7 @@ public class InitAction {
         // 建立连接
         InstructClient instructClient = new InstructClient(workerHostName, Parameters.InstructNettyServer.port);
         instructClient.start();
-        CacheUtil.InstructWorkerChannel.put(workerHostName, instructClient);
+        CacheUtil.workerInstructClient.put(workerHostName, instructClient);
     }
 
     // 检查所有worker是否已经排序

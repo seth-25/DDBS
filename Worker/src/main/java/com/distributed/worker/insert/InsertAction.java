@@ -26,7 +26,7 @@ public class InsertAction {
             int left = entry.getValue().getKey();
             int right = entry.getValue().getValue();
             if (left <= hashValue && hashValue <= right) {
-                TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
+                TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());
                 InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_TS, timeSeries);
                 tsClient.getChannel().writeAndFlush(instructTs);
             }
@@ -83,7 +83,7 @@ public class InsertAction {
                     ArrayList<TimeSeries> tmpTsList = CacheUtil.tempTsList.get(hostName);
                     if (tmpTsList != null && tmpTsList.size() > Parameters.Insert.batchTrans || CacheUtil.tempTsListCnt.get(hostName) >= Parameters.Insert.cntTrans) {
                         // 向对应worker发送ts
-                        TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
+                        TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());
                         InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_TS, tmpTsList);
                         tsClient.getChannel().writeAndFlush(instructTs);
 
@@ -110,7 +110,7 @@ public class InsertAction {
                     ArrayList<TimeSeries> tmpTsList = CacheUtil.tempTsList.get(hostName);
                     if (tmpTsList != null && tmpTsList.size() > 0) {
                         // 向对应worker发送ts
-                        TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
+                        TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());
                         InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_TS_FINISH, tmpTsList);
                         tsClient.getChannel().writeAndFlush(instructTs);
 
@@ -194,7 +194,7 @@ public class InsertAction {
                     if (tmpSaxList != null && tmpSaxList.size() > Parameters.Insert.batchTrans ||
                             CacheUtil.tempSaxListCnt.get(hostName) >= Parameters.Insert.cntTrans) {
                         // 向对应worker发送sax
-                        TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
+                        TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());
                         InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_SAX, tmpSaxList);
                         tsClient.getChannel().writeAndFlush(instructTs);
 
@@ -221,7 +221,7 @@ public class InsertAction {
                     ArrayList<Sax> tmpSaxList = CacheUtil.tempSaxList.get(hostName);
                     if (tmpSaxList != null && tmpSaxList.size() > 0) {
                         // 向对应worker发送sax
-                        TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
+                        TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());
                         InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_SAX, tmpSaxList);
                         tsClient.getChannel().writeAndFlush(instructTs);
 
@@ -242,7 +242,7 @@ public class InsertAction {
             Sax left = new Sax(entry.getValue().getKey());
             Sax right = new Sax(entry.getValue().getValue());
             if (sax.compareTo(left) >= 0 && sax.compareTo(right) <= 0) {
-                TsClient tsClient = CacheUtil.InsertWorkerChannel.get(entry.getKey());
+                TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());
                 InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_SAX, sax);
                 tsClient.getChannel().writeAndFlush(instructTs);
             }

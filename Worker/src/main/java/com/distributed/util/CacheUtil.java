@@ -24,7 +24,7 @@ public class CacheUtil {
 
     public static Map<String, Pair<Integer, Integer>> timeStampRanges = new ConcurrentHashMap<>();  // 各worker的hostname和负责的时间序列的时间戳范围
 
-    public static Map<String, TsClient> InsertWorkerChannel = new ConcurrentHashMap<>();
+    public static Map<String, TsClient> workerTsClient = new ConcurrentHashMap<>();
 
     public static String workerState;   // 当前worker的状态
 

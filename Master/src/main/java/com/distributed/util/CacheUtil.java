@@ -22,5 +22,5 @@ public class CacheUtil {
     public static HashMap<String, HashMap<Integer, Integer>> workerInVerRef = new HashMap<>(); // 所有worker的内存版本ref
     public static HashMap<String, HashMap<Integer, Integer>> workerOutVerRef = new HashMap<>(); // 所有worker的外存版本ref
 
-    public static Map<String, InstructClient> InstructWorkerChannel = new ConcurrentHashMap<>();
+    public static Map<String, InstructClient> workerInstructClient = new ConcurrentHashMap<>();
 }

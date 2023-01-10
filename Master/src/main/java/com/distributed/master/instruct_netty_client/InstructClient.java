@@ -43,7 +43,9 @@ public class InstructClient {
         }
         return channelFuture;
     }
-
+    public Channel getChannel() {
+        return channel;
+    }
     public void close() {
         channel.close();
         group.shutdownGracefully();
