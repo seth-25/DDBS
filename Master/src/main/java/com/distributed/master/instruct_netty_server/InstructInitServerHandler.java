@@ -1,7 +1,7 @@
 package com.distributed.master.instruct_netty_server;
 
-import com.distributed.domain.Constants;
-import com.distributed.domain.InstructInit;
+import common.setting.Constants;
+import common.domain.InstructInit;
 import com.distributed.util.CacheUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

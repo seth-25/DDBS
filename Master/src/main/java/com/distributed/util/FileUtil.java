@@ -1,6 +1,6 @@
 package com.distributed.util;
 
-import com.distributed.domain.FileData;
+import common.domain.FileData;
 
 import java.io.File;
 import java.io.IOException;

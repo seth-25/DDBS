@@ -2,7 +2,7 @@ package com.distributed.master.file_netty_server;
 
 import common.codec.FileObjDecoder;
 import common.codec.FileObjEncoder;
-import com.distributed.domain.FileMessage;
+import common.domain.FileMessage;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 

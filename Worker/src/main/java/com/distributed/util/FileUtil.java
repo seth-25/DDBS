@@ -70,7 +70,7 @@ public class FileUtil {
         randomAccessFile.close();
     }
 
-    public static long writeFile(String fileFolder, TimeSeries timeSeries) throws IOException {
+    public static long writeTs(String fileFolder, TimeSeries timeSeries) throws IOException {
         File folder = new File(fileFolder);
         if (!folder.exists()) {
             boolean flag = folder.mkdir();

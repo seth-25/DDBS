@@ -136,7 +136,7 @@ public class InsertAction {
         System.out.println("worker收到ts,将ts写入文件,并转化成sax");
         ArrayList<Sax> saxes = new ArrayList<>();
         for (TimeSeries ts: tsList) {
-            long offset = FileUtil.writeFile(Parameters.tsFolder, ts);
+            long offset = FileUtil.writeTs(Parameters.tsFolder, ts);
             byte[] saxData = new byte[Parameters.saxDataSize];
             DBUtil.dataBase.saxt_from_ts(ts.getTimeSeriesData(), saxData);
             saxes.add(new Sax(saxData, (byte) TsUtil.computeHash(ts), SaxUtil.createPointerOffset(offset), ts.getTimeStamp()));

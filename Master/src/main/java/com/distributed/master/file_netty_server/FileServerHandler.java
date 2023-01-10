@@ -2,14 +2,17 @@ package com.distributed.master.file_netty_server;
 
 import com.distributed.domain.*;
 import com.distributed.util.CacheUtil;
-import com.distributed.util.FileMsgUtil;
+import common.util.FileMsgUtil;
 import com.distributed.util.FileUtil;
+import common.domain.FileData;
+import common.domain.FileInfo;
+import common.domain.FileMessage;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.CharsetUtil;
-
+import common.setting.Constants;
 public class FileServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {

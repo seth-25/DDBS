@@ -1,6 +1,6 @@
 package com.distributed.master;
 
-import com.distributed.domain.Constants;
+import common.setting.Constants;
 import com.distributed.domain.Parameters;
 import com.distributed.master.init.InitAction;
 import org.apache.curator.framework.CuratorFramework;

@@ -1,7 +1,7 @@
 package com.distributed.master.instruct_netty_server;
 
-import com.distributed.domain.Constants;
-import com.distributed.domain.InstructRun;
+import common.setting.Constants;
+import common.domain.InstructRun;
 import com.distributed.master.version.VersionAction;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

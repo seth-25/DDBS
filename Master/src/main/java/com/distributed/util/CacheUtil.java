@@ -1,6 +1,6 @@
 package com.distributed.util;
 
-import com.distributed.domain.FileInfo;
+import common.domain.FileInfo;
 import com.distributed.domain.Version;
 import javafx.util.Pair;
 

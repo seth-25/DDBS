@@ -1,11 +1,11 @@
 package com.distributed.master.init;
 
-import com.distributed.domain.Constants;
-import com.distributed.domain.InstructInit;
+import common.setting.Constants;
+import common.domain.InstructInit;
 import com.distributed.domain.Parameters;
 import com.distributed.master.instruct_netty_client.InstructClient;
 import com.distributed.util.CacheUtil;
-import com.distributed.util.InstructUtil;
+import common.util.InstructUtil;
 import io.netty.channel.ChannelFuture;
 import javafx.util.Pair;
 import org.apache.curator.framework.recipes.cache.ChildData;

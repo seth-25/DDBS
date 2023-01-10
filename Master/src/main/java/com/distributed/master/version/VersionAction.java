@@ -3,8 +3,9 @@ package com.distributed.master.version;
 import com.distributed.domain.*;
 import com.distributed.master.instruct_netty_client.InstructClient;
 import com.distributed.util.CacheUtil;
-import com.distributed.util.InstructUtil;
+import common.util.InstructUtil;
 import com.distributed.util.VersionUtil;
+import common.domain.InstructRun;
 import io.netty.channel.ChannelFuture;
 import javafx.util.Pair;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
+import common.setting.Constants;
 public class VersionAction {
 
     public static synchronized void unRefCurVersion() {

@@ -153,7 +153,7 @@ public class InitAction {
 
     public static void putTs(ArrayList<TimeSeries> timeSeriesList) throws IOException {
         for (TimeSeries timeSeries : timeSeriesList) {
-            long offset = FileUtil.writeFile(Parameters.tsFolder, timeSeries);
+            long offset = FileUtil.writeTs(Parameters.tsFolder, timeSeries);
         }
         if (CacheUtil.workerState.equals(Constants.WorkerStatus.INIT)) {
             CacheUtil.workerState = Constants.WorkerStatus.HAS_PUT_TS;

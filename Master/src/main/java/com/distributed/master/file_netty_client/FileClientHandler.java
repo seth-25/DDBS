@@ -1,6 +1,6 @@
 package com.distributed.master.file_netty_client;
 
-import com.distributed.domain.FileMessage;
+import common.domain.FileMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;

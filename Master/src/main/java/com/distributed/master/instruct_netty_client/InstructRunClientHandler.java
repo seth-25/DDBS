@@ -1,6 +1,6 @@
 package com.distributed.master.instruct_netty_client;
 
-import com.distributed.domain.InstructRun;
+import common.domain.InstructRun;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
