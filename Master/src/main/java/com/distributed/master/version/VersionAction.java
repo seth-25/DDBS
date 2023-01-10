@@ -81,7 +81,7 @@ public class VersionAction {
                 int ref = inVer.getValue();
                 if (ref == 0) {
                     iterator.remove();
-                    InstructClient instructionClient = new InstructClient(hostName, Parameters.InstructNettyClient.port);
+                    InstructClient instructionClient = new InstructClient(hostName, Parameters.InstructNettyServer.port);
                     ChannelFuture channelFuture = instructionClient.start();
                     InstructRun instructrun = InstructUtil.buildInstructRun(Constants.InstructionType.DELETE_IN_VERSION, version);
                     //发送信息
@@ -107,7 +107,7 @@ public class VersionAction {
                 int ref = outVer.getValue();
                 if (ref == 0) {
                     iterator.remove();
-                    InstructClient instructionClient = new InstructClient(hostName, Parameters.InstructNettyClient.port);
+                    InstructClient instructionClient = new InstructClient(hostName, Parameters.InstructNettyServer.port);
                     ChannelFuture channelFuture = instructionClient.start();
                     InstructRun instructrun = InstructUtil.buildInstructRun(Constants.InstructionType.DELETE_OUT_VERSION, version);
                     //发送信息

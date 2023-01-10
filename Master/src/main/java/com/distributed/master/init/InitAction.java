@@ -27,7 +27,7 @@ public class InitAction {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    InstructClient instructionClient = new InstructClient(getWorkerHostName(childData), Parameters.InstructNettyClient.port);
+                    InstructClient instructionClient = new InstructClient(getWorkerHostName(childData), Parameters.InstructNettyServer.port);
                     ChannelFuture channelFuture = instructionClient.start();
                     InstructInit instructInit = InstructUtil.buildInstructInit(instruct, obj);
                     //发送信息
@@ -46,8 +46,14 @@ public class InitAction {
     }
 
     public static void addWorker(ChildData childData) {
-        CacheUtil.workerSaxRanges.put(getWorkerHostName(childData), null);
-        CacheUtil.timeStampRanges.put(getWorkerHostName(childData), null);
+        String workerHostName = getWorkerHostName(childData);
+        CacheUtil.workerSaxRanges.put(workerHostName, null);
+        CacheUtil.timeStampRanges.put(workerHostName, null);
+
+        // 建立连接
+        InstructClient instructClient = new InstructClient(workerHostName, Parameters.InstructNettyServer.port);
+        instructClient.start();
+        CacheUtil.InstructWorkerChannel.put(workerHostName, instructClient);
     }
 
     // 检查所有worker是否已经排序

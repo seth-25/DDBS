@@ -1,5 +1,6 @@
 package com.distributed.util;
 
+import com.distributed.master.instruct_netty_client.InstructClient;
 import common.domain.FileInfo;
 import com.distributed.domain.Version;
 import javafx.util.Pair;
@@ -20,4 +21,6 @@ public class CacheUtil {
     public static Version CurVersion;   // 当前的版本
     public static HashMap<String, HashMap<Integer, Integer>> workerInVerRef = new HashMap<>(); // 所有worker的内存版本ref
     public static HashMap<String, HashMap<Integer, Integer>> workerOutVerRef = new HashMap<>(); // 所有worker的外存版本ref
+
+    public static Map<String, InstructClient> InstructWorkerChannel = new ConcurrentHashMap<>();
 }

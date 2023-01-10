@@ -12,7 +12,7 @@ import org.apache.zookeeper.CreateMode;
 
 import java.util.List;
 
-public class Master extends Thread {
+public class Master implements Runnable {
 
     // zookeeper对象
     private Coordinator coordinator;
