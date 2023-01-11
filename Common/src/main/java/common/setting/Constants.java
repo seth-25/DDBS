@@ -42,6 +42,7 @@ public class Constants {
         // init
         public static final String SEND_SAX_STATISTIC = "send sax statistic"; // Master向Worker请求发送sax统计
         public static final String SAX_STATISTIC = "sax statistic"; // Worker向Master请求发送的sax统计
+        public static final String SAX_STATISTIC_FINISH = "sax statistic finish"; // Master告诉Worker已收到Worker发送的sax统计
         public static final String SAX_RANGES = "sax ranges"; // Master向Worker请求发送sax
         public static final String TS_RANGES = "ts ranges"; // Master向Worker发送ts范围
         // insert

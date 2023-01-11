@@ -3,6 +3,7 @@ package com.distributed.master.instruct_netty_server;
 import common.setting.Constants;
 import common.domain.InstructInit;
 import com.distributed.util.CacheUtil;
+import common.util.InstructUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
@@ -38,6 +39,7 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
                     throw new RuntimeException("instructInit 类型错误");
                 TreeMap<String, Long> cntSaxes = (TreeMap<String, Long>) instructInit.getDataObject();
                 CacheUtil.cntWorkerSaxes.add(cntSaxes);
+                channel.writeAndFlush(InstructUtil.buildInstructInit(Constants.InstructionType.SAX_STATISTIC_FINISH, null));
                 break;
         }
         ctx.writeAndFlush(new InstructInit("master收到worker消息"));
