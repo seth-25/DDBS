@@ -22,6 +22,17 @@ public class InitAction {
         return childData.getPath().substring(Parameters.Zookeeper.workerFolder.length());
     }
 
+    public static void addWorker(ChildData childData) {
+        String workerHostName = getWorkerHostName(childData);
+        CacheUtil.workerSaxRanges.put(workerHostName, null);
+        CacheUtil.timeStampRanges.put(workerHostName, null);
+
+        // 建立连接
+        InstructClient instructClient = new InstructClient(workerHostName, Parameters.InstructNettyServer.port);
+        instructClient.start();
+        CacheUtil.workerInstructClient.put(workerHostName, instructClient);
+    }
+
     private static void sendInstructs(List<ChildData> childDataList, String instruct, Object obj) {
         ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
         for (ChildData childData : childDataList) {
@@ -47,16 +58,7 @@ public class InitAction {
         }
     }
 
-    public static void addWorker(ChildData childData) {
-        String workerHostName = getWorkerHostName(childData);
-        CacheUtil.workerSaxRanges.put(workerHostName, null);
-        CacheUtil.timeStampRanges.put(workerHostName, null);
 
-        // 建立连接
-        InstructClient instructClient = new InstructClient(workerHostName, Parameters.InstructNettyServer.port);
-        instructClient.start();
-        CacheUtil.workerInstructClient.put(workerHostName, instructClient);
-    }
 
     // 检查所有worker是否已经排序
     public static void checkSort(List<ChildData> childDataList) {
@@ -105,7 +107,7 @@ public class InitAction {
                 entry.setValue(rangePairs.get(index ++));
             }
             // 发送sax范围
-            sendInstructs(childDataList,Constants.InstructionType.SAX_RANGES, CacheUtil.workerSaxRanges);
+            sendInstructs(childDataList, Constants.InstructionType.SAX_RANGES, CacheUtil.workerSaxRanges);
             System.out.println("sax范围：");
             for (Map.Entry<String, Pair<byte[], byte[]>> entry: CacheUtil.workerSaxRanges.entrySet()) {
                 System.out.println(entry.getKey() + "|" + Arrays.toString(entry.getValue().getKey()) + "|" + Arrays.toString(entry.getValue().getValue()));
@@ -123,7 +125,7 @@ public class InitAction {
             }
             System.out.println();
             // 发送ts范围
-            sendInstructs(childDataList,Constants.InstructionType.TS_RANGES, CacheUtil.timeStampRanges);
+            sendInstructs(childDataList, Constants.InstructionType.TS_RANGES, CacheUtil.timeStampRanges);
             System.out.println("ts范围：");
             for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
                 System.out.println(entry.getKey() + "|" + entry.getValue().getKey() + "|" + entry.getValue().getValue());

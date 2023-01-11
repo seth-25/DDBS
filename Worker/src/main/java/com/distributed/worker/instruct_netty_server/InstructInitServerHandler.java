@@ -50,6 +50,7 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
                 if (!(instructInit.getDataObject() instanceof TreeMap))
                     throw new RuntimeException("instructInit 类型错误");
                 CacheUtil.workerSaxRanges = (HashMap<String, Pair<byte[],byte[]>>) instructInit.getDataObject();
+                InitAction.setInstructClientToWorker(); // 和所有worker建立连接
                 InitAction.sendSax();
                 break;
             case Constants.InstructionType.TS_RANGES:   // 收到Master发送的ts范围，向各Worker分发ts

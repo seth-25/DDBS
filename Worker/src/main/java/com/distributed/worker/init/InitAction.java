@@ -32,10 +32,18 @@ public class InitAction {
         CacheUtil.masterInstructClient = instructClient;
     }
 
+    public static void setInstructClientToWorker() {
+        for (Map.Entry<String, Pair<byte[], byte[]>> entry: CacheUtil.workerSaxRanges.entrySet()) {
+            String workerHostName = entry.getKey();
+            InstructClient instructClient = new InstructClient(workerHostName, Parameters.InstructNettyServer.port);
+            instructClient.start();
+            CacheUtil.workerInstructClient.put(workerHostName, instructClient);
+        }
+    }
+
+
     //Worker向Master发送sax的统计
     public static void sendSaxStatics(String hostName) {
-//        InstructClient fileClient = new InstructClient(hostName, Parameters.InstructNettyClient.port);
-//        ChannelFuture channelFuture = fileClient.start();
         Channel channel = CacheUtil.masterInstructClient.getChannel();
 
         // sax统计很小，用instruct形式传输即可
@@ -50,7 +58,6 @@ public class InitAction {
     // Worker向Worker发送Sax
     public static void sendSax() throws InterruptedException {
         final int taskCount = CacheUtil.workerSaxRanges.size();    // 任务总数
-        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
         CountDownLatch countDownLatch = new CountDownLatch(taskCount);
 //        TreeMap<String, ArrayList<Sax>> workerSaxes = new TreeMap<>();
         for (Map.Entry<String, Pair<byte[], byte[]>> entry: CacheUtil.workerSaxRanges.entrySet()) {
@@ -65,21 +72,14 @@ public class InitAction {
                             saxes.add(sax);
                         }
                     }
-                    InstructClient instructClient = new InstructClient(entry.getKey(), Parameters.InstructNettyClient.port);
-                    ChannelFuture channelFuture = instructClient.start();
-
+                    Channel channel = CacheUtil.workerInstructClient.get(entry.getKey()).getChannel();
                     InstructInit instructInit = InstructUtil.buildInstructInit(Constants.InstructionType.SEND_SAX, saxes);
-                    channelFuture.channel().writeAndFlush(instructInit);
-                    try {
-                        channelFuture.channel().closeFuture().sync(); // 等待关闭
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    instructClient.close();
+                    channel.writeAndFlush(instructInit);
+
                     countDownLatch.countDown();
                 }
             };
-            newFixedThreadPool.execute(runnable);
+            CacheUtil.newFixedThreadPool.execute(runnable);
         }
         countDownLatch.await(); //  等待所有线程结束
         System.out.println("发送sax完成");
@@ -87,20 +87,9 @@ public class InitAction {
     }
     // Worker收到其他Worker发来的Sax,存入数据库中
     public static void putSax(ArrayList<Sax> saxes) throws InterruptedException {
-        final int taskCount = saxes.size();    // 任务总数
-        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
-        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
         for (Sax sax: saxes) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    DBUtil.dataBase.put(sax.getLeafTimeKeys());
-                    countDownLatch.countDown();
-                }
-            };
-            newFixedThreadPool.execute(runnable);
+            DBUtil.dataBase.put(sax.getLeafTimeKeys());
         }
-        countDownLatch.await(); //  等待所有线程结束
 
         if (CacheUtil.workerState.equals(Constants.WorkerStatus.INIT)) {
             CacheUtil.workerState = Constants.WorkerStatus.HAS_PUT_SAX;
@@ -130,17 +119,11 @@ public class InitAction {
                             timeSeriesList.add(timeSeries);
                         }
                     }
-                    InstructClient instructClient = new InstructClient(entry.getKey(), Parameters.InstructNettyClient.port);
-                    ChannelFuture channelFuture = instructClient.start();
-
+//                    InstructClient instructClient = new InstructClient(entry.getKey(), Parameters.InstructNettyClient.port);
+//                    ChannelFuture channelFuture = instructClient.start();
+                    Channel channel = CacheUtil.workerInstructClient.get(entry.getKey()).getChannel();
                     InstructInit instructInit = InstructUtil.buildInstructInit(Constants.InstructionType.SEND_TS, timeSeriesList);
-                    channelFuture.channel().writeAndFlush(instructInit);
-                    try {
-                        channelFuture.channel().closeFuture().sync(); // 等待关闭
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    instructClient.close();
+                    channel.writeAndFlush(instructInit);
                     countDownLatch.countDown();
                 }
             };
