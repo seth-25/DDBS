@@ -40,7 +40,11 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
         switch (instructionStr) {
             case Constants.InstructionType.SEND_SAX_STATISTIC:    // 给Master发送SAX值个数统计
                 String hostName = (String) instructInit.getDataObject();    // Master的hostname
+                InitAction.setInstructClientToMaster(hostName); // 跟master建立连接
                 InitAction.sendSaxStatics(hostName);
+                break;
+            case Constants.InstructionType.SAX_STATISTIC_FINISH:    // Master收到Worker发来SAX值个数统计
+                InitAction.sendSaxStaticsFinish();
                 break;
             case Constants.InstructionType.SAX_RANGES:  //  收到Master发送的sax范围，向各Worker分发sax
                 if (!(instructInit.getDataObject() instanceof TreeMap))

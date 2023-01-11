@@ -12,6 +12,7 @@ import common.util.FileMsgUtil;
 import com.distributed.util.FileUtil;
 import common.util.InstructUtil;
 import common.util.TsUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import javafx.util.Pair;
 
@@ -25,26 +26,27 @@ import java.util.concurrent.Executors;
 import common.setting.Constants;
 public class InitAction {
 
+    public static void setInstructClientToMaster(String hostName) {
+        InstructClient instructClient = new InstructClient(hostName, Parameters.InstructNettyServer.port);
+        instructClient.start();
+        CacheUtil.masterInstructClient = instructClient;
+    }
+
     //Worker向Master发送sax的统计
     public static void sendSaxStatics(String hostName) {
-        InstructClient fileClient = new InstructClient(hostName, Parameters.InstructNettyClient.port);
-        ChannelFuture channelFuture = fileClient.start();
+//        InstructClient fileClient = new InstructClient(hostName, Parameters.InstructNettyClient.port);
+//        ChannelFuture channelFuture = fileClient.start();
+        Channel channel = CacheUtil.masterInstructClient.getChannel();
 
         // sax统计很小，用instruct形式传输即可
         InstructInit instructInit = InstructUtil.buildInstructInit(Constants.InstructionType.SAX_STATISTIC, CacheUtil.cntInitSaxes);
-        channelFuture.channel().writeAndFlush(instructInit);
-        try {
-            channelFuture.channel().closeFuture().sync(); // 等待关闭
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        fileClient.close();
+        channel.writeAndFlush(instructInit);
+    }
 
-        System.out.println("sax统计传输完成");
+    public static void sendSaxStaticsFinish() {
         CacheUtil.cntInitSaxes = null;
         CoordinatorUtil.coordinator.setNode(Parameters.Zookeeper.workerPath, Constants.WorkerStatus.HAS_SENT_SAX_STATISTIC);
     }
-
     // Worker向Worker发送Sax
     public static void sendSax() throws InterruptedException {
         final int taskCount = CacheUtil.workerSaxRanges.size();    // 任务总数
@@ -178,7 +180,7 @@ public class InitAction {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    FileClient fileClient = new FileClient(hostName, Parameters.FileNettyClient.port);
+                    FileClient fileClient = new FileClient(hostName, Parameters.FileNettyServer.port);
                     ChannelFuture channelFuture = fileClient.start();
 
                     FileMessage fileMessage = FileMsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());

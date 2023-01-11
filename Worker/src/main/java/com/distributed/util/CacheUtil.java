@@ -1,5 +1,6 @@
 package com.distributed.util;
 
+import com.distributed.worker.instruct_netty_client.InstructClient;
 import common.domain.FileInfo;
 import common.setting.Parameters;
 import common.domain.Sax;
@@ -24,7 +25,9 @@ public class CacheUtil {
 
     public static Map<String, Pair<Integer, Integer>> timeStampRanges = new ConcurrentHashMap<>();  // 各worker的hostname和负责的时间序列的时间戳范围
 
-    public static Map<String, TsClient> workerTsClient = new ConcurrentHashMap<>();
+
+
+
 
     public static String workerState;   // 当前worker的状态
 
@@ -35,4 +38,9 @@ public class CacheUtil {
 
     public static ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);  // 线程池
 
+
+    public static Map<String, TsClient> workerTsClient = new ConcurrentHashMap<>();
+
+    public static Map<String, InstructClient> workerInstructClient = new ConcurrentHashMap<>();
+    public static InstructClient masterInstructClient;
 }

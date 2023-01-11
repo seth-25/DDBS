@@ -36,10 +36,7 @@ public class TsServerTest {
             CacheUtil.workerTsClient.put(entry.getKey(), tsClient);
         }
 
-
-
         Thread.sleep(Long.MAX_VALUE);
-
 
         for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
             TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());

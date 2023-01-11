@@ -21,9 +21,6 @@ public class Parameters {
         public static final int port = 6666;
     }
 
-    public static class FileNettyClient {
-        public static final int port = 6666;
-    }
 
     public static class InstructNettyServer {
         public static final int port = 6667;
