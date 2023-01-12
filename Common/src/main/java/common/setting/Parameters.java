@@ -5,7 +5,7 @@ public class Parameters {
     public static int numThread = 4;
 
 
-    public static final int saxDataSize = 16; // sax中数据大小
+    public static final int saxDataSize = 8; // sax中数据大小
     public static final int saxPointerSize = 8; // sax中指针的大小
     public static final int saxSize = saxDataSize + saxPointerSize; // 一条sax大小多少字节
 

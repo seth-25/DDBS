@@ -10,6 +10,8 @@ import javafx.util.Pair;
 import java.util.Map;
 
 public class TsServerTest {
+
+
     public static void main(String[] args) throws InterruptedException {
 
 //        DBUtil.dataBase.open("./db_data");
@@ -20,7 +22,7 @@ public class TsServerTest {
 //        CacheUtil.timeStampRanges.put("Ubuntu002", new Pair<>(128, 255));
         CacheUtil.timeStampRanges.put("Ubuntu002", new Pair<>(0, 255));
         byte[] left = {0, 0, 0, 0, 0, 0, 0, 0};
-        byte[] right = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+        byte[] right = {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
         CacheUtil.workerSaxRanges.put("Ubuntu002", new Pair<>(left, right));
 
 

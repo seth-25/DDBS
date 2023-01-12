@@ -1,5 +1,6 @@
 package com.distributed.worker.ts_netty_server;
 
+import com.distributed.util.CacheUtil;
 import common.domain.Sax;
 import common.util.InstructUtil;
 import com.distributed.worker.insert.InsertAction;
@@ -44,9 +45,14 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
                     throw new RuntimeException("instructRun 类型错误");
                 ArrayList<TimeSeries> clientToWorkerTsList = (ArrayList<TimeSeries>) instructTs.getDataObject();
 //                System.out.println("\t收到ts,时间戳: ");
-                ctx.writeAndFlush(InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS, null));
+//                ctx.writeAndFlush(InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS, null));
+//
+//                long t1 = System.currentTimeMillis();
                 InsertAction.tempStoreTs(clientToWorkerTsList);
+                System.out.println(CacheUtil.tempTsList.get("Ubuntu002").size());
                 InsertAction.checkStoreTs();
+//                TsServer.insertTime += System.currentTimeMillis() - t1;
+
                 break;
             case Constants.InstructionType.INSERT_TS_FINISH: // worker收到client的发送ts完成的请求，最后检查没发完的ts
                 ctx.writeAndFlush(InstructUtil.buildInstructTs(Constants.InstructionType.FINISH, null));
@@ -60,8 +66,12 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
                 ctx.writeAndFlush(new InstructTs("Worker服务端成功接收Worker的ts"));
 
                 ArrayList<Sax> saxes = InsertAction.tsToSax(workerToWorkerTsList);
+
+                long t2 = System.currentTimeMillis();
                 InsertAction.tempStoreSax(saxes);
                 InsertAction.checkStoreSax();
+                TsServer.insertTime += System.currentTimeMillis() - t2;
+
                 break;
             case Constants.InstructionType.SEND_TS_FINISH: // worker收到worker的ts，转化成sax，再将sax发送到对应worker，最后检查没发完的sax
                 if (!(instructTs.getDataObject() instanceof ArrayList))
@@ -80,6 +90,8 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
                 ArrayList<Sax> saxList = (ArrayList<Sax>) instructTs.getDataObject();
                 ctx.writeAndFlush(new InstructTs("Worker服务端成功接收Worker的sax"));
                 InsertAction.putSax(saxList);
+
+                System.out.println("插入时间:" + TsServer.insertTime);
                 break;
         }
 

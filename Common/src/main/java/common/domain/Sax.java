@@ -29,9 +29,9 @@ public class Sax implements Comparable<Sax>{
 
     public byte[] getLeafTimeKeys() {
         byte[] res = new byte[data.length + 1 + p_offset.length + timeStamp.length];
-        System.arraycopy(data, 0, res, 0, data.length);
-        res[data.length] = p_hash;
-        System.arraycopy(p_offset, 0, res, data.length + 1, p_offset.length);
+        res[0] = p_hash;
+        System.arraycopy(p_offset, 0, res, 1, p_offset.length);
+        System.arraycopy(data, 0, res, 1 + p_offset.length, data.length);
         System.arraycopy(timeStamp, 0, res, data.length + 1 + p_offset.length, timeStamp.length);
         return res;
     }
@@ -45,7 +45,7 @@ public class Sax implements Comparable<Sax>{
         assert this.getSaxLength() == o.getSaxLength();
         byte[] a = this.getData();
         byte[] b = o.getData();
-        for (int i = 0; i < a.length; i ++ ) {
+        for (int i = a.length - 1; i > 0; i -- ) {
             if ((a[i] & 0xff) < (b[i] & 0xff)) return -1;
             else if ((a[i] &0xff) > (b[i] & 0xff)) return 1;
         }

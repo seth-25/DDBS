@@ -7,6 +7,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class TsServer extends Thread{
 
+    public static long insertTime = 0;
+
+
     private final int PORT;
 
     private EventLoopGroup bossGroup = new NioEventLoopGroup();
