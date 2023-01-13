@@ -87,7 +87,7 @@ public class InsertAction {
                         TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());
                         InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.SEND_TS, tmpTsList);
                         tsClient.getChannel().writeAndFlush(instructTs);
-
+                        System.out.println("发送ts");
                         CacheUtil.tempTsList.put(hostName, new ArrayList<>());
                         CacheUtil.tempTsListCnt.put(hostName, 0);
                     }

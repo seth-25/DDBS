@@ -7,6 +7,7 @@ import common.domain.TimeSeries;
 import com.distributed.util.CacheUtil;
 import common.util.InstructUtil;
 import common.util.TsUtil;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import org.junit.Test;
 import common.setting.Parameters;
@@ -18,6 +19,43 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TsClientTest {
+
+    @Test
+    public void testTsBytebuf() {  // worker不应答
+        for (int i = 0; i < 1000005; i ++) {
+            byte[] a = new byte[1024];
+            long timeStamp = new Date().getTime() / 1000;
+            byte[] b = TsUtil.longToBytes(timeStamp);
+            System.out.println("生成时间戳:" + timeStamp + "  hash " + timeStamp % Parameters.tsHash);
+            TimeSeries timeSeries = new TimeSeries(a, b);
+            CacheUtil.timeSeriesLinkedList.offer(timeSeries);
+        }
+
+        TsClient tsClient = new TsClient("Ubuntu002", Parameters.TsNettyServer.port);
+        ChannelFuture channelFuture = tsClient.start();
+
+        long startTime = System.currentTimeMillis();
+
+        ByteBuf tsList = InsertAction.makeTsListByteBuf(Parameters.Insert.batchTrans);
+        while(tsList.isReadable()) {
+            System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.readableBytes() / Parameters.tsSize);
+            channelFuture.channel().writeAndFlush(tsList);
+            tsList = InsertAction.makeTsListByteBuf(Parameters.Insert.batchTrans);
+        }
+        channelFuture.channel().writeAndFlush(tsList);
+        System.out.println("所有时间戳发送完毕");
+
+        try {
+            channelFuture.channel().closeFuture().sync(); // 等待关闭
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        tsClient.close();
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("执行时间:" + (double)(endTime - startTime) / 1000);
+    }
+
     @Test
     public void testTs() {  // worker不应答
         for (int i = 0; i < 1000005; i ++) {
