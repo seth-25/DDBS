@@ -36,7 +36,7 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
         SocketChannel channel = (SocketChannel) ctx.channel();
         String clientHostName = channel.remoteAddress().getHostName();
         System.out.println("\t客户端信息" + instructInit.getInstruction());
-        String instructionStr = instructInit.getInstruction();
+        int instructionStr = instructInit.getInstruction();
         switch (instructionStr) {
             case Constants.InstructionType.SEND_SAX_STATISTIC:    // 给Master发送SAX值个数统计
                 String hostName = (String) instructInit.getDataObject();    // Master的hostname
@@ -72,7 +72,7 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
                 InitAction.putTs(timeSeriesList);
                 break;
         }
-        ctx.writeAndFlush(new InstructInit("Worker服务端成功接受指令"));
+        ctx.writeAndFlush(new InstructInit(0));
     }
 
     @Override

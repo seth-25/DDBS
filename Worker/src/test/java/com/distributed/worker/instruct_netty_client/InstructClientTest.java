@@ -13,7 +13,7 @@ public class InstructClientTest {
         InstructClient instructClient = new InstructClient("Ubuntu001", Parameters.InstructNettyClient.port);
         ChannelFuture channelFuture = instructClient.start();
 
-        InstructInit instructInit = InstructUtil.buildInstructInit("test", "Ubuntu003");
+        InstructInit instructInit = InstructUtil.buildInstructInit(0, "Ubuntu003");
         //发送信息
         channelFuture.channel().writeAndFlush(instructInit);
         channelFuture.channel().closeFuture().sync(); // 等待关闭

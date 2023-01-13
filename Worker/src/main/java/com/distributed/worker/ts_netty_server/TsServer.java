@@ -7,7 +7,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class TsServer extends Thread{
 
+    //todo
     public static long insertTime = 0;
+    public static int insertCnt = 0;
 
 
     private final int PORT;

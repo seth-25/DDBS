@@ -6,19 +6,24 @@ import common.domain.InstructTs;
 import common.domain.TimeSeries;
 import com.distributed.util.CacheUtil;
 import common.util.InstructUtil;
+import common.util.MsgUtil;
 import common.util.TsUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import org.junit.Test;
 import common.setting.Parameters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TsClientTest {
+
+
 
     @Test
     public void testTsBytebuf() {  // worker不应答
@@ -36,11 +41,12 @@ public class TsClientTest {
 
         long startTime = System.currentTimeMillis();
 
-        ByteBuf tsList = InsertAction.makeTsListByteBuf(Parameters.Insert.batchTrans);
-        while(tsList.isReadable()) {
-            System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.readableBytes() / Parameters.tsSize);
+        byte[] tsList = InsertAction.makeTsListByte(Parameters.Insert.batchTrans);
+        while(tsList.length > 0) {
+            System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.length / Parameters.tsSize);
+            MsgUtil.buildMsgTs(Constants.InstructionType.INSERT_TS, tsList);
             channelFuture.channel().writeAndFlush(tsList);
-            tsList = InsertAction.makeTsListByteBuf(Parameters.Insert.batchTrans);
+            tsList = InsertAction.makeTsListByte(Parameters.Insert.batchTrans);
         }
         channelFuture.channel().writeAndFlush(tsList);
         System.out.println("所有时间戳发送完毕");

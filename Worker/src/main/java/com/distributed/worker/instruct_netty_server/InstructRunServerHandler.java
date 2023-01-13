@@ -27,7 +27,7 @@ public class InstructRunServerHandler extends SimpleChannelInboundHandler<Instru
         SocketChannel channel = (SocketChannel) ctx.channel();
         String clientHostName = channel.remoteAddress().getHostName();
         System.out.println("\t客户端信息" + instructRun.getInstruction());
-        String instructionStr = instructRun.getInstruction();
+        int instruction = instructRun.getInstruction();
 
     }
 

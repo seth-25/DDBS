@@ -4,14 +4,14 @@ import common.domain.protocol.Command;
 import common.domain.protocol.Packet;
 
 public class InstructRun extends Packet {
-    private String instruction;
+    private int instruction;
     private Object dataObject;
 
-    public InstructRun(String instruction) {
+    public InstructRun(int instruction) {
         this.instruction = instruction;
     }
 
-    public void setInstruction(String instruction) {
+    public void setInstruction(int instruction) {
         this.instruction = instruction;
     }
 
@@ -19,7 +19,7 @@ public class InstructRun extends Packet {
         this.dataObject = dataObject;
     }
 
-    public String getInstruction() {
+    public int getInstruction() {
         return instruction;
     }
 

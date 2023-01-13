@@ -151,38 +151,38 @@ public class InitAction {
     }
 
     public static void sendFile(String hostName) throws IOException, InterruptedException {
-
-        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
-        ArrayList<File> files = FileUtil.getAllFile(Parameters.MergeSort.countSaxPath);
-
-        final int taskCount = files.size();    // 任务总数
-        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
-
-        System.out.println("开始传输");
-        for (File file: files) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    FileClient fileClient = new FileClient(hostName, Parameters.FileNettyServer.port);
-                    ChannelFuture channelFuture = fileClient.start();
-
-                    FileMessage fileMessage = FileMsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
-                    System.out.println("传输文件: " + file.getAbsolutePath());
-
-                    channelFuture.channel().writeAndFlush(fileMessage);
-                    try {
-                        channelFuture.channel().closeFuture().sync(); // 等待关闭
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    fileClient.close();
-                    countDownLatch.countDown();
-                }
-            };
-            newFixedThreadPool.execute(runnable);
-
-        }
-        countDownLatch.await(); //  等待所有线程结束
-        System.out.println("传输完成");
+//
+//        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
+//        ArrayList<File> files = FileUtil.getAllFile(Parameters.MergeSort.countSaxPath);
+//
+//        final int taskCount = files.size();    // 任务总数
+//        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
+//
+//        System.out.println("开始传输");
+//        for (File file: files) {
+//            Runnable runnable = new Runnable() {
+//                @Override
+//                public void run() {
+//                    FileClient fileClient = new FileClient(hostName, Parameters.FileNettyServer.port);
+//                    ChannelFuture channelFuture = fileClient.start();
+//
+//                    FileMessage fileMessage = FileMsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
+//                    System.out.println("传输文件: " + file.getAbsolutePath());
+//
+//                    channelFuture.channel().writeAndFlush(fileMessage);
+//                    try {
+//                        channelFuture.channel().closeFuture().sync(); // 等待关闭
+//                    } catch (InterruptedException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    fileClient.close();
+//                    countDownLatch.countDown();
+//                }
+//            };
+//            newFixedThreadPool.execute(runnable);
+//
+//        }
+//        countDownLatch.await(); //  等待所有线程结束
+//        System.out.println("传输完成");
     }
 }

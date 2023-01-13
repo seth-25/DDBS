@@ -17,17 +17,17 @@ public class FileClientTest {
     public void testFile() throws InterruptedException, IOException {
 
 
-        FileClient fileClient = new FileClient("Ubuntu001", Parameters.FileNettyServer.port);
-        ChannelFuture channelFuture = fileClient.start();
-
-        File file = new File("./test.txt");
-        FileMessage fileMessage = FileMsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
-        System.out.println(file.getAbsolutePath() + " " + file.getName() + " " + file.length());
-
-
-        channelFuture.channel().writeAndFlush(fileMessage);
-        channelFuture.channel().closeFuture().sync(); // 等待关闭
-        fileClient.close();
+//        FileClient fileClient = new FileClient("Ubuntu001", Parameters.FileNettyServer.port);
+//        ChannelFuture channelFuture = fileClient.start();
+//
+//        File file = new File("./test.txt");
+//        FileMessage fileMessage = FileMsgUtil.buildFileRequest(file.getAbsolutePath(), file.getName(), Constants.FileType.SAX_STATISTIC, file.length());
+//        System.out.println(file.getAbsolutePath() + " " + file.getName() + " " + file.length());
+//
+//
+//        channelFuture.channel().writeAndFlush(fileMessage);
+//        channelFuture.channel().closeFuture().sync(); // 等待关闭
+//        fileClient.close();
 //        //启动客户端
 //        MyNettyClient myNettyClient = new MyNettyClient("Ubuntu001", 2333);
 //        ChannelFuture channelFuture = myNettyClient.start();

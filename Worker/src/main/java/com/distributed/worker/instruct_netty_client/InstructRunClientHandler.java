@@ -24,7 +24,7 @@ public class InstructRunClientHandler extends SimpleChannelInboundHandler<Instru
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, InstructRun instructRun) throws Exception {
         System.out.println("\t\t收到服务端消息：" + instructRun.getInstruction());
-        String instructionStr = instructRun.getInstruction();
+        int instructionStr = instructRun.getInstruction();
         switch (instructionStr) {
             case Constants.InstructionType.FINISH:
                 channelHandlerContext.close();

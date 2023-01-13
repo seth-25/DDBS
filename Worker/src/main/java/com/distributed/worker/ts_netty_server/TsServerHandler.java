@@ -1,6 +1,7 @@
 package com.distributed.worker.ts_netty_server;
 
 import com.distributed.util.CacheUtil;
+import common.domain.MsgTs;
 import common.domain.Sax;
 import common.util.InstructUtil;
 import com.distributed.worker.insert.InsertAction;
@@ -32,14 +33,14 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!(msg instanceof ByteBuf)) return;
+        if (!(msg instanceof MsgTs)) return;
         SocketChannel channel = (SocketChannel) ctx.channel();
         String clientHostName = channel.remoteAddress().getHostName();
 
-        ByteBuf tsList = (ByteBuf) msg;
-        System.out.println("收到ts");
-
-        System.out.println(System.currentTimeMillis() - TsServer.insertTime);
+        byte[] tsList = ((MsgTs) msg).getData();
+        System.out.println("收到ts " + tsList.length);
+        TsServer.insertCnt ++ ;
+        System.out.println(System.currentTimeMillis() - TsServer.insertTime +  " " + TsServer.insertCnt);
 
 //        InstructTs instructTs = (InstructTs) msg;
 //

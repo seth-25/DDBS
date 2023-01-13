@@ -31,7 +31,7 @@ public class TsClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         InstructTs instructTs = (InstructTs)msg;
-        String instructionStr = instructTs.getInstruction();
+        int instructionStr = instructTs.getInstruction();
         System.out.println(instructionStr);
         ArrayList<TimeSeries> tsList = InsertAction.makeTsList(Parameters.Insert.batchTrans);
         switch (instructionStr) {

@@ -1,14 +1,14 @@
 package common.domain;
 
 public class InstructTs{
-    private String instruction;
+    private int instruction;
     private Object dataObject;
 
-    public InstructTs(String instruction) {
+    public InstructTs(int instruction) {
         this.instruction = instruction;
     }
 
-    public void setInstruction(String instruction) {
+    public void setInstruction(int instruction) {
         this.instruction = instruction;
     }
 
@@ -16,7 +16,7 @@ public class InstructTs{
         this.dataObject = dataObject;
     }
 
-    public String getInstruction() {
+    public int getInstruction() {
         return instruction;
     }
 
