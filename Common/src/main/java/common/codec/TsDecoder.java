@@ -17,6 +17,9 @@ public class TsDecoder extends LengthFieldBasedFrameDecoder {
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         in = (ByteBuf) super.decode(ctx, in);
+        if (in == null) {
+            return null;
+        }
         int type = in.readInt();
         int length = in.readInt();
         if (in.readableBytes() != length) {
@@ -24,6 +27,7 @@ public class TsDecoder extends LengthFieldBasedFrameDecoder {
         }
         byte[] data = new byte[length];
         in.readBytes(data);
+        in.release();
         return MsgUtil.buildMsgTs(type, data);
     }
 }
