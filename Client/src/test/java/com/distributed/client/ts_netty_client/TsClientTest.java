@@ -1,6 +1,7 @@
 package com.distributed.client.ts_netty_client;
 
 import com.distributed.client.insert.InsertAction;
+import common.domain.MsgTs;
 import common.setting.Constants;
 import common.domain.InstructTs;
 import common.domain.TimeSeries;
@@ -44,8 +45,8 @@ public class TsClientTest {
         byte[] tsList = InsertAction.makeTsListByte(Parameters.Insert.batchTrans);
         while(tsList.length > 0) {
             System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.length / Parameters.tsSize);
-            MsgUtil.buildMsgTs(Constants.InstructionType.INSERT_TS, tsList);
-            channelFuture.channel().writeAndFlush(tsList);
+            MsgTs msgTs = MsgUtil.buildMsgTs(Constants.InstructionType.INSERT_TS, tsList);
+            channelFuture.channel().writeAndFlush(msgTs);
             tsList = InsertAction.makeTsListByte(Parameters.Insert.batchTrans);
         }
         channelFuture.channel().writeAndFlush(tsList);
