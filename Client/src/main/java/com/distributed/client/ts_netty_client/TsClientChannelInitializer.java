@@ -15,7 +15,8 @@ public class TsClientChannelInitializer extends ChannelInitializer<SocketChannel
 //        socketChannel.pipeline().addLast(new ObjDecoder(InstructTs.class));
 //        socketChannel.pipeline().addLast(new ObjEncoder(InstructTs.class));
         socketChannel.pipeline().addLast(new TsEncoder());
-        socketChannel.pipeline().addLast(new TsDecoder(Parameters.tsSize * Parameters.Insert.batchTrans + 8, 4, 4));
+//        socketChannel.pipeline().addLast(new TsDecoder(Parameters.tsSize * Parameters.Insert.batchTrans + 8, 4, 4));
+        socketChannel.pipeline().addLast(new TsDecoder());
         // 在管道中添加接收数据实现方法
         socketChannel.pipeline().addLast(new TsClientHandler());
     }
