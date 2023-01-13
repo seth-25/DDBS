@@ -35,21 +35,21 @@ public class TsClientHandler extends ChannelInboundHandlerAdapter {
         System.out.println(instructionStr);
         ArrayList<TimeSeries> tsList = InsertAction.makeTsList(Parameters.Insert.batchTrans);
         switch (instructionStr) {
-            case Constants.InstructionType.INSERT_TS:
-                if (tsList.size() > 0) {
-                    InstructTs instructTs1 = InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS, tsList);
-                    System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.size());
-                    ctx.channel().writeAndFlush(instructTs1);
-                    if (tsList.size() != 1000) {
-                        System.out.println(tsList.get(tsList.size() - 1));
-                    }
-                }
-                else {
-                    InstructTs instructTs1 = InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS_FINISH, null);
-                    ctx.channel().writeAndFlush(instructTs1);
-                    System.out.println("所有时间戳发送完毕");
-                }
-                break;
+//            case Constants.InstructionType.INSERT_TS:
+//                if (tsList.size() > 0) {
+//                    InstructTs instructTs1 = InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS, tsList);
+//                    System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.size());
+//                    ctx.channel().writeAndFlush(instructTs1);
+//                    if (tsList.size() != 1000) {
+//                        System.out.println(tsList.get(tsList.size() - 1));
+//                    }
+//                }
+//                else {
+//                    InstructTs instructTs1 = InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS_FINISH, null);
+//                    ctx.channel().writeAndFlush(instructTs1);
+//                    System.out.println("所有时间戳发送完毕");
+//                }
+//                break;
             case Constants.InstructionType.FINISH:
                 ctx.close();
                 break;

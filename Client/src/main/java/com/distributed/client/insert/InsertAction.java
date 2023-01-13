@@ -36,14 +36,21 @@ public class InsertAction {
 
     public static byte[] makeTsListByte(int num) {
         byte[] tsList = new byte[num * Parameters.tsSize];
+        int cnt = 0;
         for (int i = 0; i < num; i ++ ) {
             TimeSeries timeSeries = CacheUtil.timeSeriesLinkedList.poll();
             if (timeSeries == null) break;
             System.arraycopy(timeSeries.getTimeSeriesData(), 0, tsList, Parameters.tsSize * i, Parameters.timeSeriesDataSize);
             System.arraycopy(timeSeries.getTimeStamp(), 0, tsList, Parameters.tsSize * i + Parameters.timeSeriesDataSize, Parameters.timeStampSize);
+            cnt ++;
 //            tsList.add(timeSeries);
-
         }
+        if (cnt != num) {
+            byte[] resTsList = new byte[cnt * Parameters.tsSize];
+            System.arraycopy(tsList, 0, resTsList, 0, cnt *= Parameters.timeSeriesDataSize);
+            return resTsList;
+        }
+
         return tsList;
     }
 }
