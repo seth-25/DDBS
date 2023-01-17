@@ -1,7 +1,7 @@
 package common.setting;
 
 public class Constants {
-    public static class TransferStep {
+    public static class FileTransferStep {
         public static final int FILE_REQUEST = 100;  // 客户端向服务端请求发送文件
         public static final int FILE_RESPONSE = 101;  // 服务端回复同意客户端的请求
         public static final int FILE_DATA = 102;  // 客户端发送数据
@@ -33,7 +33,7 @@ public class Constants {
         public static final String BALANCE = "in balance";
     }
 
-    public static class InstructionType {
+    public static class MsgType {
         // init
         public static final int SEND_SAX_STATISTIC = 1; // Master向Worker请求发送sax统计
         public static final int SAX_STATISTIC = 2; // Worker向Master请求发送的sax统计

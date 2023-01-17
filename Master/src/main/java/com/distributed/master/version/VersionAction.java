@@ -83,9 +83,9 @@ public class VersionAction {
                     iterator.remove();
                     InstructClient instructionClient = new InstructClient(hostName, Parameters.InstructNettyServer.port);
                     ChannelFuture channelFuture = instructionClient.start();
-                    InstructRun instructrun = InstructUtil.buildInstructRun(Constants.InstructionType.DELETE_IN_VERSION, version);
+                    InstructRun instructrun = InstructUtil.buildInstructRun(Constants.MsgType.DELETE_IN_VERSION, version);
                     //发送信息
-                    System.out.println("给" + hostName +"发送指令 " + Constants.InstructionType.DELETE_IN_VERSION);
+                    System.out.println("给" + hostName +"发送指令 " + Constants.MsgType.DELETE_IN_VERSION);
                     channelFuture.channel().writeAndFlush(instructrun);
                     try {
                         channelFuture.channel().closeFuture().sync(); // 等待关闭
@@ -109,9 +109,9 @@ public class VersionAction {
                     iterator.remove();
                     InstructClient instructionClient = new InstructClient(hostName, Parameters.InstructNettyServer.port);
                     ChannelFuture channelFuture = instructionClient.start();
-                    InstructRun instructrun = InstructUtil.buildInstructRun(Constants.InstructionType.DELETE_OUT_VERSION, version);
+                    InstructRun instructrun = InstructUtil.buildInstructRun(Constants.MsgType.DELETE_OUT_VERSION, version);
                     //发送信息
-                    System.out.println("给" + hostName +"发送指令 " + Constants.InstructionType.DELETE_OUT_VERSION);
+                    System.out.println("给" + hostName +"发送指令 " + Constants.MsgType.DELETE_OUT_VERSION);
                     channelFuture.channel().writeAndFlush(instructrun);
                     try {
                         channelFuture.channel().closeFuture().sync(); // 等待关闭

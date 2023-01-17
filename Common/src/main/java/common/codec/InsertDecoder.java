@@ -7,7 +7,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-public class TsDecoder extends ByteToMessageDecoder {
+public class InsertDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf in, List<Object> out) throws Exception {
         if (in.readableBytes() < 4) {
@@ -22,6 +22,6 @@ public class TsDecoder extends ByteToMessageDecoder {
         int type = in.readInt();
         byte[] data = new byte[dataLength];
         in.readBytes(data);
-        out.add(MsgUtil.buildMsgTs(type, data));
+        out.add(MsgUtil.buildMsgInsert(type, data));
     }
 }

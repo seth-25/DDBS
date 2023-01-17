@@ -26,7 +26,7 @@ public class InstructRunClientHandler extends SimpleChannelInboundHandler<Instru
         System.out.println("\t\t收到服务端消息：" + instructRun.getInstruction());
         int instructionStr = instructRun.getInstruction();
         switch (instructionStr) {
-            case Constants.InstructionType.FINISH:
+            case Constants.MsgType.FINISH:
                 channelHandlerContext.close();
                 break;
         }

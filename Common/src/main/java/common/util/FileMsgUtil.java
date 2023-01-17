@@ -12,7 +12,7 @@ public class FileMsgUtil {
         FileData fileData = new FileData(filePath, fileName, fileType, fileSize, Constants.FileStatus.BEGIN);
 
         FileMessage fileMessage = new FileMessage();
-        fileMessage.setStep(Constants.TransferStep.FILE_REQUEST);
+        fileMessage.setStep(Constants.FileTransferStep.FILE_REQUEST);
         fileMessage.setDataObject(fileData);
 
         return fileMessage;
@@ -20,7 +20,7 @@ public class FileMsgUtil {
 
     public static FileMessage buildFileData(FileData fileData) {
         FileMessage fileMessage = new FileMessage();
-        fileMessage.setStep(Constants.TransferStep.FILE_DATA);
+        fileMessage.setStep(Constants.FileTransferStep.FILE_DATA);
         fileMessage.setDataObject(fileData);
 
         return fileMessage;
@@ -29,7 +29,7 @@ public class FileMsgUtil {
     public static FileMessage buildFileResponse(FileInfo fileInfo) {
 
         FileMessage fileMessage = new FileMessage();
-        fileMessage.setStep(Constants.TransferStep.FILE_RESPONSE);
+        fileMessage.setStep(Constants.FileTransferStep.FILE_RESPONSE);
         fileMessage.setDataObject(fileInfo);
 
         return fileMessage;

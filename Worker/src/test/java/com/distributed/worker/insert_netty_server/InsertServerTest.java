@@ -1,15 +1,15 @@
-package com.distributed.worker.ts_netty_server;
+package com.distributed.worker.insert_netty_server;
 
 import common.setting.Constants;
 import common.setting.Parameters;
 import com.distributed.util.CacheUtil;
 import com.distributed.worker.instruct_netty_server.InstructServer;
-import com.distributed.worker.ts_netty_client.TsClient;
+import com.distributed.worker.insert_netty_client.InsertClient;
 import javafx.util.Pair;
 
 import java.util.Map;
 
-public class TsServerTest {
+public class InsertServerTest {
 
 
     public static void main(String[] args) throws InterruptedException {
@@ -27,22 +27,22 @@ public class TsServerTest {
 
 
 
-        TsServer tsServer = new TsServer(Parameters.TsNettyServer.port);
-        tsServer.start();
+        InsertServer insertServer = new InsertServer(Parameters.TsNettyServer.port);
+        insertServer.start();
         InstructServer instructServer = new InstructServer(Parameters.InstructNettyServer.port);
         instructServer.start();
 
         for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
-            TsClient tsClient = new TsClient(entry.getKey(), Parameters.TsNettyServer.port);
-            tsClient.start();
-            CacheUtil.workerTsClient.put(entry.getKey(), tsClient);
+            InsertClient insertClient = new InsertClient(entry.getKey(), Parameters.TsNettyServer.port);
+            insertClient.start();
+            CacheUtil.workerTsClient.put(entry.getKey(), insertClient);
         }
 
         Thread.sleep(Long.MAX_VALUE);
 
         for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
-            TsClient tsClient = CacheUtil.workerTsClient.get(entry.getKey());
-            tsClient.close();    // 关闭InstructTs连接
+            InsertClient insertClient = CacheUtil.workerTsClient.get(entry.getKey());
+            insertClient.close();    // 关闭InstructTs连接
         }
 
 //

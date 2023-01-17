@@ -54,7 +54,7 @@ public class FileServerHandler extends ChannelInboundHandlerAdapter {
             }
 
             switch (fileMessageStep) {
-                case Constants.TransferStep.FILE_REQUEST:
+                case Constants.FileTransferStep.FILE_REQUEST:
 
                     System.out.println("\t客户端"+ clientHostName + "请求传输文件");
                     FileInfo oldFileInfo = CacheUtil.fileInfoMap.get(clientFileName);
@@ -78,7 +78,7 @@ public class FileServerHandler extends ChannelInboundHandlerAdapter {
                     }
                     break;
 
-                case Constants.TransferStep.FILE_DATA:
+                case Constants.FileTransferStep.FILE_DATA:
 
                     FileInfo fileInfo;
                     if (Constants.FileStatus.COMPLETE == fileData.getStatus()) {

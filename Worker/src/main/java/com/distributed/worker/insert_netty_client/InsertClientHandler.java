@@ -1,11 +1,11 @@
-package com.distributed.worker.ts_netty_client;
+package com.distributed.worker.insert_netty_client;
 
 import common.domain.InstructTs;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 
-public class TsClientHandler extends ChannelInboundHandlerAdapter {
+public class InsertClientHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
         System.out.println("\t\t连接信息：该客户端连接到服务端。channelId：" + channel.id());

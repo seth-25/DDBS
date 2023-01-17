@@ -1,20 +1,14 @@
-package com.distributed.worker.ts_netty_server;
+package com.distributed.worker.insert_netty_server;
 
 import com.distributed.util.CacheUtil;
-import common.domain.MsgTs;
-import common.domain.Sax;
-import common.util.InstructUtil;
+import common.domain.MsgInsert;
 import com.distributed.worker.insert.InsertAction;
-import common.domain.InstructTs;
-import common.domain.TimeSeries;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 
-import java.util.ArrayList;
 import common.setting.Constants;
-public class TsServerHandler extends ChannelInboundHandlerAdapter {
+public class InsertServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -22,7 +16,7 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
         SocketChannel channel = (SocketChannel) ctx.channel();
         System.out.println("\t连接信息：有1个客户端连接到本服务端。Thread：" + Thread.currentThread().getName());
         System.out.println("\t客户端连接IP和Port：" + channel.remoteAddress());
-        TsServer.insertTime = System.currentTimeMillis();
+        InsertServer.transTime = System.currentTimeMillis();
     }
 
     @Override
@@ -33,14 +27,33 @@ public class TsServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!(msg instanceof MsgTs)) return;
+        if (!(msg instanceof MsgInsert)) return;
         SocketChannel channel = (SocketChannel) ctx.channel();
         String clientHostName = channel.remoteAddress().getHostName();
 
-        byte[] tsList = ((MsgTs) msg).getData();
-        System.out.println("收到ts " + tsList.length);
-        TsServer.insertCnt ++ ;
-        System.out.println(System.currentTimeMillis() - TsServer.insertTime +  " " + TsServer.insertCnt);
+        MsgInsert msgInsert = (MsgInsert) msg;
+
+        int type = msgInsert.getType();
+        switch (type) {
+            case Constants.MsgType.INSERT_TS: // worker收到client的ts，将ts发送到对应worker
+
+                byte[] tsByteList = msgInsert.getData();
+                InsertServer.insertCnt ++ ;
+                System.out.println("收到ts " + InsertServer.insertCnt +  " "  + tsByteList.length + " 传输时间 " + (System.currentTimeMillis() - InsertServer.transTime)  + " " + Thread.currentThread().getName());
+
+
+                long t1 = System.currentTimeMillis();
+
+                InsertAction.tempStoreTs(tsByteList);
+                System.out.println("暂存的ts长度 " + CacheUtil.tempTsList.get("Ubuntu002").size() + " " + CacheUtil.tempTsListCnt.get("Ubuntu002"));
+//                InsertAction.checkStoreTs();
+
+                InsertServer.insertTime += System.currentTimeMillis() - t1;
+                System.out.println("插入时间 " + InsertServer.insertTime);
+                break;
+        }
+
+
 
 //        InstructTs instructTs = (InstructTs) msg;
 //

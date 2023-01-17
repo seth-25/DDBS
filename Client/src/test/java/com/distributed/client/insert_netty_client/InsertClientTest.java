@@ -1,7 +1,7 @@
-package com.distributed.client.ts_netty_client;
+package com.distributed.client.insert_netty_client;
 
 import com.distributed.client.insert.InsertAction;
-import common.domain.MsgTs;
+import common.domain.MsgInsert;
 import common.setting.Constants;
 import common.domain.InstructTs;
 import common.domain.TimeSeries;
@@ -9,20 +9,17 @@ import com.distributed.util.CacheUtil;
 import common.util.InstructUtil;
 import common.util.MsgUtil;
 import common.util.TsUtil;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import org.junit.Test;
 import common.setting.Parameters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TsClientTest {
+public class InsertClientTest {
 
 
 
@@ -37,16 +34,16 @@ public class TsClientTest {
             CacheUtil.timeSeriesLinkedList.offer(timeSeries);
         }
 
-        TsClient tsClient = new TsClient("Ubuntu002", Parameters.TsNettyServer.port);
-        ChannelFuture channelFuture = tsClient.start();
+        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.TsNettyServer.port);
+        ChannelFuture channelFuture = insertClient.start();
 
         long startTime = System.currentTimeMillis();
 
         byte[] tsList = InsertAction.makeTsListByte(Parameters.Insert.batchTrans);
         while(tsList.length > 0) {
             System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.length / Parameters.tsSize);
-            MsgTs msgTs = MsgUtil.buildMsgTs(Constants.InstructionType.INSERT_TS, tsList);
-            channelFuture.channel().writeAndFlush(msgTs);
+            MsgInsert msgInsert = MsgUtil.buildMsgInsert(Constants.MsgType.INSERT_TS, tsList);
+            channelFuture.channel().writeAndFlush(msgInsert);
             tsList = InsertAction.makeTsListByte(Parameters.Insert.batchTrans);
         }
         channelFuture.channel().writeAndFlush(tsList);
@@ -57,7 +54,7 @@ public class TsClientTest {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        tsClient.close();
+        insertClient.close();
 
         long endTime = System.currentTimeMillis();
         System.out.println("执行时间:" + (double)(endTime - startTime) / 1000);
@@ -74,14 +71,14 @@ public class TsClientTest {
             CacheUtil.timeSeriesLinkedList.offer(timeSeries);
         }
 
-        TsClient tsClient = new TsClient("Ubuntu002", Parameters.TsNettyServer.port);
-        ChannelFuture channelFuture = tsClient.start();
+        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.TsNettyServer.port);
+        ChannelFuture channelFuture = insertClient.start();
 
         long startTime = System.currentTimeMillis();
 
         ArrayList<TimeSeries> tsList = InsertAction.makeTsList(Parameters.Insert.batchTrans);
         while(tsList.size() > 0) {
-            InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS, tsList);
+            InstructTs instructTs = InstructUtil.buildInstructTs(Constants.MsgType.INSERT_TS, tsList);
             System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.size());
             channelFuture.channel().writeAndFlush(instructTs);
             if (tsList.size() != 1000) {
@@ -89,7 +86,7 @@ public class TsClientTest {
             }
             tsList = InsertAction.makeTsList(Parameters.Insert.batchTrans);
         }
-        InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS_FINISH, null);
+        InstructTs instructTs = InstructUtil.buildInstructTs(Constants.MsgType.INSERT_TS_FINISH, null);
         channelFuture.channel().writeAndFlush(instructTs);
         System.out.println("所有时间戳发送完毕");
 
@@ -98,7 +95,7 @@ public class TsClientTest {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        tsClient.close();
+        insertClient.close();
 
         long endTime = System.currentTimeMillis();
         System.out.println("执行时间:" + (double)(endTime - startTime) / 1000);
@@ -115,12 +112,12 @@ public class TsClientTest {
             CacheUtil.timeSeriesLinkedList.offer(timeSeries);
         }
 
-        TsClient tsClient = new TsClient("Ubuntu002", Parameters.TsNettyServer.port);
-        ChannelFuture channelFuture = tsClient.start();
+        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.TsNettyServer.port);
+        ChannelFuture channelFuture = insertClient.start();
 
         long startTime = System.currentTimeMillis();
 
-        InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS, InsertAction.makeTsList(Parameters.Insert.batchTrans));
+        InstructTs instructTs = InstructUtil.buildInstructTs(Constants.MsgType.INSERT_TS, InsertAction.makeTsList(Parameters.Insert.batchTrans));
         channelFuture.channel().writeAndFlush(instructTs);
 
         try {
@@ -128,7 +125,7 @@ public class TsClientTest {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        tsClient.close();
+        insertClient.close();
 
         long endTime = System.currentTimeMillis();
         System.out.println("执行时间:" + (double)(endTime - startTime) / 1000);
@@ -141,8 +138,8 @@ public class TsClientTest {
         ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
         CountDownLatch countDownLatch = new CountDownLatch(taskCount);
 
-        TsClient tsClient = new TsClient("Ubuntu002", Parameters.TsNettyServer.port);
-        ChannelFuture channelFuture = tsClient.start();
+        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.TsNettyServer.port);
+        ChannelFuture channelFuture = insertClient.start();
 
         for (int i = 0; i < taskCount; i ++ ) {
             Runnable runnable = new Runnable() {
@@ -155,7 +152,7 @@ public class TsClientTest {
                     System.out.println("时间戳:" + timeStamp + "  hash " + timeStamp % Parameters.tsHash);
 
                     TimeSeries timeSeries = new TimeSeries(a, b);
-                    InstructTs instructTs = InstructUtil.buildInstructTs(Constants.InstructionType.INSERT_TS, timeSeries);
+                    InstructTs instructTs = InstructUtil.buildInstructTs(Constants.MsgType.INSERT_TS, timeSeries);
                     channelFuture.channel().writeAndFlush(instructTs);
                     try {
                         channelFuture.channel().closeFuture().sync(); // 等待关闭
@@ -170,7 +167,7 @@ public class TsClientTest {
             newFixedThreadPool.execute(runnable);
         }
         countDownLatch.await(); //  等待所有线程结束
-        tsClient.close();
+        insertClient.close();
     }
 
 }

@@ -34,12 +34,12 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
         System.out.println("\t客户端信息" + instructInit.getInstruction());
         String instructionStr = instructInit.getInstruction();
         switch (instructionStr) {
-            case Constants.InstructionType.SAX_STATISTIC:    // Worker发来SAX值个数统计
+            case Constants.MsgType.SAX_STATISTIC:    // Worker发来SAX值个数统计
                 if (!(instructInit.getDataObject() instanceof TreeMap))
                     throw new RuntimeException("instructInit 类型错误");
                 TreeMap<String, Long> cntSaxes = (TreeMap<String, Long>) instructInit.getDataObject();
                 CacheUtil.cntWorkerSaxes.add(cntSaxes);
-                channel.writeAndFlush(InstructUtil.buildInstructInit(Constants.InstructionType.SAX_STATISTIC_FINISH, null));
+                channel.writeAndFlush(InstructUtil.buildInstructInit(Constants.MsgType.SAX_STATISTIC_FINISH, null));
                 break;
         }
         ctx.writeAndFlush(new InstructInit("master收到worker消息"));

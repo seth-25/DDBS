@@ -1,4 +1,4 @@
-package com.distributed.client.ts_netty_client;
+package com.distributed.client.insert_netty_client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -7,12 +7,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public class TsClient {
+public class InsertClient {
     private final String HOST_NAME;
     private final Integer PORT;
     private EventLoopGroup group = new NioEventLoopGroup();
     private Channel channel;
-    public TsClient(String HOST_NAME, Integer PORT) {
+    public InsertClient(String HOST_NAME, Integer PORT) {
         this.HOST_NAME = HOST_NAME;
         this.PORT = PORT;
     }
@@ -25,7 +25,7 @@ public class TsClient {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
-                    .handler(new TsClientChannelInitializer());
+                    .handler(new InsertClientChannelInitializer());
 
             channelFuture = bootstrap.connect(HOST_NAME, PORT).sync();
             channel = channelFuture.channel();

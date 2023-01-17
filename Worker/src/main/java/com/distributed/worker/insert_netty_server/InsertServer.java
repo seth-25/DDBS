@@ -1,13 +1,14 @@
-package com.distributed.worker.ts_netty_server;
+package com.distributed.worker.insert_netty_server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class TsServer extends Thread{
+public class InsertServer extends Thread{
 
     //todo
+    public static long transTime = 0;
     public static long insertTime = 0;
     public static int insertCnt = 0;
 
@@ -18,7 +19,7 @@ public class TsServer extends Thread{
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
     private Channel channel;
 
-    public TsServer(int PORT) {
+    public InsertServer(int PORT) {
         this.PORT = PORT;
     }
 
@@ -30,7 +31,7 @@ public class TsServer extends Thread{
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.AUTO_READ, true)
-                    .childHandler(new TsServerChannelInitializer());
+                    .childHandler(new InsertServerChannelInitializer());
 
             channelFuture = bootstrap.bind(PORT).syncUninterruptibly();
 

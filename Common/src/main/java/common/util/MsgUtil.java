@@ -1,10 +1,10 @@
 package common.util;
 
-import common.domain.MsgTs;
+import common.domain.MsgInsert;
 
 public class MsgUtil {
-    public static MsgTs buildMsgTs(int type, byte[] data) {
-        return new MsgTs(type, data.length, data);
+    public static MsgInsert buildMsgInsert(int type, byte[] data) {
+        return new MsgInsert(type, data.length, data);
     }
 
 }

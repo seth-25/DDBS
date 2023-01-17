@@ -5,7 +5,7 @@ import common.domain.FileInfo;
 import common.setting.Parameters;
 import common.domain.Sax;
 import common.domain.TimeSeries;
-import com.distributed.worker.ts_netty_client.TsClient;
+import com.distributed.worker.insert_netty_client.InsertClient;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class CacheUtil {
     public static ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);  // 线程池
 
 
-    public static Map<String, TsClient> workerTsClient = new ConcurrentHashMap<>();
+    public static Map<String, InsertClient> workerTsClient = new ConcurrentHashMap<>();
 
     public static Map<String, InstructClient> workerInstructClient = new ConcurrentHashMap<>();
     public static InstructClient masterInstructClient;

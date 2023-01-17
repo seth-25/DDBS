@@ -1,11 +1,11 @@
 package common.domain;
 
-public class MsgTs {
+public class MsgInsert {
     private int type;    // 指令类型
     private int length; // 消息多长
     private byte[] data;
 
-    public MsgTs(int type, int length, byte[] data) {
+    public MsgInsert(int type, int length, byte[] data) {
         this.type = type;
         this.length = length;
         this.data = data;

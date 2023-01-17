@@ -32,13 +32,13 @@ public class InstructRunServerHandler extends SimpleChannelInboundHandler<Instru
 
         String instructionStr = instructRun.getInstruction();
         switch (instructionStr) {
-            case Constants.InstructionType.SEND_VERSION:    // Worker发来新的版本
+            case Constants.MsgType.SEND_VERSION:    // Worker发来新的版本
                 if (!(instructRun.getDataObject() instanceof Pair))
                     throw new RuntimeException("instructRun 类型错误");
                 byte[] versionBytes = (byte[]) ((Pair<?, ?>) instructRun.getDataObject()).getKey();
                 String workerHostName = (String) ((Pair<?, ?>) instructRun.getDataObject()).getValue();
                 VersionAction.changeVersion(versionBytes, workerHostName);  // 更改master的版本
-                ctx.channel().writeAndFlush(new InstructRun(Constants.InstructionType.FINISH));
+                ctx.channel().writeAndFlush(new InstructRun(Constants.MsgType.FINISH));
                 VersionAction.checkWorkerVersion(); // 检查是否有worker需要删除版本
                 break;
         }

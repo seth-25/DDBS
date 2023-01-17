@@ -7,7 +7,6 @@ import com.distributed.master.instruct_netty_client.InstructClient;
 import com.distributed.util.CacheUtil;
 import common.util.InstructUtil;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import javafx.util.Pair;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
@@ -70,7 +69,7 @@ public class InitAction {
             }
         }
         if (flag && childDataList.size() >= Parameters.numWorkerInit) { // 所有worker均启动，且排完序
-            sendInstructs(childDataList, Constants.InstructionType.SEND_SAX_STATISTIC, Parameters.hostName);
+            sendInstructs(childDataList, Constants.MsgType.SEND_SAX_STATISTIC, Parameters.hostName);
         }
     }
 
@@ -107,7 +106,7 @@ public class InitAction {
                 entry.setValue(rangePairs.get(index ++));
             }
             // 发送sax范围
-            sendInstructs(childDataList, Constants.InstructionType.SAX_RANGES, CacheUtil.workerSaxRanges);
+            sendInstructs(childDataList, Constants.MsgType.SAX_RANGES, CacheUtil.workerSaxRanges);
             System.out.println("sax范围：");
             for (Map.Entry<String, Pair<byte[], byte[]>> entry: CacheUtil.workerSaxRanges.entrySet()) {
                 System.out.println(entry.getKey() + "|" + Arrays.toString(entry.getValue().getKey()) + "|" + Arrays.toString(entry.getValue().getValue()));
@@ -125,7 +124,7 @@ public class InitAction {
             }
             System.out.println();
             // 发送ts范围
-            sendInstructs(childDataList, Constants.InstructionType.TS_RANGES, CacheUtil.timeStampRanges);
+            sendInstructs(childDataList, Constants.MsgType.TS_RANGES, CacheUtil.timeStampRanges);
             System.out.println("ts范围：");
             for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
                 System.out.println(entry.getKey() + "|" + entry.getValue().getKey() + "|" + entry.getValue().getValue());

@@ -38,34 +38,34 @@ public class InstructInitServerHandler extends SimpleChannelInboundHandler<Instr
         System.out.println("\t客户端信息" + instructInit.getInstruction());
         int instructionStr = instructInit.getInstruction();
         switch (instructionStr) {
-            case Constants.InstructionType.SEND_SAX_STATISTIC:    // 给Master发送SAX值个数统计
+            case Constants.MsgType.SEND_SAX_STATISTIC:    // 给Master发送SAX值个数统计
                 String hostName = (String) instructInit.getDataObject();    // Master的hostname
                 InitAction.setInstructClientToMaster(hostName); // 跟master建立连接
                 InitAction.sendSaxStatics(hostName);
                 break;
-            case Constants.InstructionType.SAX_STATISTIC_FINISH:    // Master收到Worker发来SAX值个数统计
+            case Constants.MsgType.SAX_STATISTIC_FINISH:    // Master收到Worker发来SAX值个数统计
                 InitAction.sendSaxStaticsFinish();
                 break;
-            case Constants.InstructionType.SAX_RANGES:  //  收到Master发送的sax范围，向各Worker分发sax
+            case Constants.MsgType.SAX_RANGES:  //  收到Master发送的sax范围，向各Worker分发sax
                 if (!(instructInit.getDataObject() instanceof TreeMap))
                     throw new RuntimeException("instructInit 类型错误");
                 CacheUtil.workerSaxRanges = (HashMap<String, Pair<byte[],byte[]>>) instructInit.getDataObject();
                 InitAction.setInstructClientToWorker(); // 和所有worker建立连接
                 InitAction.sendSax();
                 break;
-            case Constants.InstructionType.TS_RANGES:   // 收到Master发送的ts范围，向各Worker分发ts
+            case Constants.MsgType.TS_RANGES:   // 收到Master发送的ts范围，向各Worker分发ts
                 if (!(instructInit.getDataObject() instanceof TreeMap))
                     throw new RuntimeException("instructInit 类型错误");
                 CacheUtil.timeStampRanges = (HashMap<String, Pair<Integer, Integer>>) instructInit.getDataObject();
                  InitAction.sendTs();
                 break;
-            case Constants.InstructionType.SEND_SAX:
+            case Constants.MsgType.SEND_SAX:
                 if (!(instructInit.getDataObject() instanceof ArrayList))
                     throw new RuntimeException("instructInit 类型错误");
                 ArrayList<Sax> saxes = (ArrayList<Sax>) instructInit.getDataObject();
                 InitAction.putSax(saxes);
                 break;
-            case Constants.InstructionType.SEND_TS:
+            case Constants.MsgType.SEND_TS:
                 if (!(instructInit.getDataObject() instanceof ArrayList))
                     throw new RuntimeException("instructInit 类型错误");
                 ArrayList<TimeSeries> timeSeriesList = (ArrayList<TimeSeries>) instructInit.getDataObject();

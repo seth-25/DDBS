@@ -1,22 +1,17 @@
 package com.distributed.worker.init;
 
 import com.distributed.util.*;
-import com.distributed.worker.file_netty_client.FileClient;
 import com.distributed.worker.instruct_netty_client.InstructClient;
-import common.domain.FileMessage;
 import common.domain.InstructInit;
 import common.domain.Sax;
 import common.domain.TimeSeries;
 import common.setting.Parameters;
-import common.util.FileMsgUtil;
 import com.distributed.util.FileUtil;
 import common.util.InstructUtil;
 import common.util.TsUtil;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import javafx.util.Pair;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -47,7 +42,7 @@ public class InitAction {
         Channel channel = CacheUtil.masterInstructClient.getChannel();
 
         // sax统计很小，用instruct形式传输即可
-        InstructInit instructInit = InstructUtil.buildInstructInit(Constants.InstructionType.SAX_STATISTIC, CacheUtil.cntInitSaxes);
+        InstructInit instructInit = InstructUtil.buildInstructInit(Constants.MsgType.SAX_STATISTIC, CacheUtil.cntInitSaxes);
         channel.writeAndFlush(instructInit);
     }
 
@@ -73,7 +68,7 @@ public class InitAction {
                         }
                     }
                     Channel channel = CacheUtil.workerInstructClient.get(entry.getKey()).getChannel();
-                    InstructInit instructInit = InstructUtil.buildInstructInit(Constants.InstructionType.SEND_SAX, saxes);
+                    InstructInit instructInit = InstructUtil.buildInstructInit(Constants.MsgType.SEND_SAX, saxes);
                     channel.writeAndFlush(instructInit);
 
                     countDownLatch.countDown();
@@ -122,7 +117,7 @@ public class InitAction {
 //                    InstructClient instructClient = new InstructClient(entry.getKey(), Parameters.InstructNettyClient.port);
 //                    ChannelFuture channelFuture = instructClient.start();
                     Channel channel = CacheUtil.workerInstructClient.get(entry.getKey()).getChannel();
-                    InstructInit instructInit = InstructUtil.buildInstructInit(Constants.InstructionType.SEND_TS, timeSeriesList);
+                    InstructInit instructInit = InstructUtil.buildInstructInit(Constants.MsgType.SEND_TS, timeSeriesList);
                     channel.writeAndFlush(instructInit);
                     countDownLatch.countDown();
                 }

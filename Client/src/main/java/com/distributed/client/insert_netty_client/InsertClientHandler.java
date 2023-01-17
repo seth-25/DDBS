@@ -1,10 +1,8 @@
-package com.distributed.client.ts_netty_client;
+package com.distributed.client.insert_netty_client;
 
 import com.distributed.client.insert.InsertAction;
-import com.distributed.util.CacheUtil;
 import common.setting.Constants;
 import common.setting.Parameters;
-import common.util.InstructUtil;
 import common.domain.InstructTs;
 import common.domain.TimeSeries;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,7 +12,7 @@ import io.netty.channel.socket.SocketChannel;
 import java.util.ArrayList;
 
 
-public class TsClientHandler extends ChannelInboundHandlerAdapter {
+public class InsertClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
@@ -50,7 +48,7 @@ public class TsClientHandler extends ChannelInboundHandlerAdapter {
 //                    System.out.println("所有时间戳发送完毕");
 //                }
 //                break;
-            case Constants.InstructionType.FINISH:
+            case Constants.MsgType.FINISH:
                 ctx.close();
                 break;
         }

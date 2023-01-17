@@ -19,9 +19,9 @@ public class db_send {
 
         InstructClient instructionClient = new InstructClient(Parameters.hostName, Parameters.InstructNettyClient.port);
         ChannelFuture channelFuture = instructionClient.start();
-        InstructRun instructrun = InstructUtil.buildInstructRun(Constants.InstructionType.SEND_VERSION, new Pair<>(edit, Parameters.hostName));
+        InstructRun instructrun = InstructUtil.buildInstructRun(Constants.MsgType.SEND_VERSION, new Pair<>(edit, Parameters.hostName));
         //发送信息
-        System.out.println("给" + Parameters.hostName +"发送指令 " + Constants.InstructionType.SEND_VERSION);
+        System.out.println("给" + Parameters.hostName +"发送指令 " + Constants.MsgType.SEND_VERSION);
         channelFuture.channel().writeAndFlush(instructrun);
         try {
             channelFuture.channel().closeFuture().sync(); // 等待关闭
