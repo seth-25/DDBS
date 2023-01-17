@@ -9,7 +9,7 @@ import java.util.List;
 
 public class InsertDecoder extends ByteToMessageDecoder {
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf in, List<Object> out) throws Exception {
+    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf in, List<Object> out){
         if (in.readableBytes() < 4) {
             return;
         }

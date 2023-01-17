@@ -2,20 +2,26 @@ package common.domain;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 8位sax
+ * 7位文件偏移
+ * 1位文件名
+ * 8位时间戳
+ */
 public class Sax implements Comparable<Sax>{
     private byte[] data;
-    private byte p_hash;
     private byte[] p_offset;
+    private byte p_hash;
     private byte[] timeStamp;
 
     public Sax(byte[] saxData) {
         this.data = saxData;
     }
 
-    public Sax(byte[] saxData, byte p_hash, byte[] p_offset, byte[] timeStamp) {
+    public Sax(byte[] saxData, byte[] p_offset, byte p_hash, byte[] timeStamp) {
         this.data = saxData;
-        this.p_hash = p_hash;
         this.p_offset = p_offset;
+        this.p_hash = p_hash;
         this.timeStamp = timeStamp;
     }
 
@@ -29,8 +35,8 @@ public class Sax implements Comparable<Sax>{
 
     public byte[] getLeafTimeKeys() {
         byte[] res = new byte[data.length + 1 + p_offset.length + timeStamp.length];
-        res[0] = p_hash;
-        System.arraycopy(p_offset, 0, res, 1, p_offset.length);
+        System.arraycopy(p_offset, 0, res, 0, p_offset.length);
+        res[7] = p_hash;
         System.arraycopy(data, 0, res, 1 + p_offset.length, data.length);
         System.arraycopy(timeStamp, 0, res, data.length + 1 + p_offset.length, timeStamp.length);
         return res;

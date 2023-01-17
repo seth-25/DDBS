@@ -1,5 +1,6 @@
-package com.distributed.worker.insert_netty_server;
+package insert;
 
+import com.distributed.worker.insert_netty_server.InsertServer;
 import common.setting.Constants;
 import common.setting.Parameters;
 import com.distributed.util.CacheUtil;
@@ -27,22 +28,22 @@ public class InsertServerTest {
 
 
 
-        InsertServer insertServer = new InsertServer(Parameters.TsNettyServer.port);
+        InsertServer insertServer = new InsertServer(Parameters.InsertNettyServer.port);
         insertServer.start();
         InstructServer instructServer = new InstructServer(Parameters.InstructNettyServer.port);
         instructServer.start();
 
         for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
-            InsertClient insertClient = new InsertClient(entry.getKey(), Parameters.TsNettyServer.port);
+            InsertClient insertClient = new InsertClient(entry.getKey(), Parameters.InsertNettyServer.port);
             insertClient.start();
-            CacheUtil.workerTsClient.put(entry.getKey(), insertClient);
+            CacheUtil.workerInsertClient.put(entry.getKey(), insertClient);
         }
 
         Thread.sleep(Long.MAX_VALUE);
 
         for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
-            InsertClient insertClient = CacheUtil.workerTsClient.get(entry.getKey());
-            insertClient.close();    // 关闭InstructTs连接
+            InsertClient insertClient = CacheUtil.workerInsertClient.get(entry.getKey());
+            insertClient.close();    // 关闭insert连接
         }
 
 //

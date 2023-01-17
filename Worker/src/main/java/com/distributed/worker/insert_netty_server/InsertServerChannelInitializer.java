@@ -15,7 +15,6 @@ public class InsertServerChannelInitializer extends ChannelInitializer<SocketCha
 //        socketChannel.pipeline().addLast(new ObjEncoder(InstructTs.class));
         // 长度在偏移为0的位置，长度占4字节
         socketChannel.pipeline().addLast(new InsertDecoder());
-//        socketChannel.pipeline().addLast(new TsDecoder1());
         socketChannel.pipeline().addLast(new InsertEncoder());
         // 在管道中添加接收数据实现方法
         socketChannel.pipeline().addLast(new InsertServerHandler());

@@ -70,7 +70,7 @@ public class MemorySort {
             // ts转化sax接口
             byte[] saxData = new byte[Parameters.saxDataSize];
             DBUtil.dataBase.saxt_from_ts(tsData, saxData);
-            Sax sax = new Sax(saxData, (byte) TsUtil.computeHash(timeSeries), SaxUtil.createPointerOffset(file_offset), timeStamp);
+            Sax sax = new Sax(saxData, SaxUtil.createPointerOffset(file_offset), (byte) TsUtil.computeHash(timeSeries), timeStamp);
             saxes.add(sax);
             addCnt(sax.toString()); // 统计这个sax的值出现几次
         }
@@ -98,7 +98,7 @@ public class MemorySort {
         int cntFile = 0;
         ArrayList<Sax> saxes = new ArrayList<>();
         for (File file: files) {
-            FileChannelReader reader = new FileChannelReader(file.getPath(), Parameters.MemorySort.readSize);
+            FileChannelReader reader = new FileChannelReader(file.getPath(), Parameters.MemorySort.readSize, 0);
             file_offset = 0;
             while (reader.read() != -1) {
                 byte[] arrays = reader.getArray();

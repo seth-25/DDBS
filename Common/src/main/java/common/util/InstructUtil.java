@@ -20,7 +20,6 @@ public class InstructUtil {
     }
 
     public static InstructRun buildInstructRun(int instruction, Object obj) {
-
         InstructRun ins = new InstructRun(instruction);
         ins.setDataObject(obj);
         return ins;

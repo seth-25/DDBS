@@ -29,7 +29,7 @@ public class Parameters {
     public static class InstructNettyClient {
         public static final int port = 6667;
     }
-    public static class TsNettyServer {
+    public static class InsertNettyServer {
         public static final int port = 6668;
     }
 

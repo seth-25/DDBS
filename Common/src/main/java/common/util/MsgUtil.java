@@ -7,4 +7,6 @@ public class MsgUtil {
         return new MsgInsert(type, data.length, data);
     }
 
+
+
 }

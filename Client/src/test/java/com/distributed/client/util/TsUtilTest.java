@@ -26,7 +26,6 @@ public class TsUtilTest {
         int num = 1000000;
 //        ArrayList<TimeSeries> tsList = new ArrayList<>();
         ByteBuf tsList = Unpooled.buffer(num * Parameters.tsSize);
-        tsList.writeByte(Constants.MsgType.SEND_TS);
         long t = 0, allT1 = 0, allT2 = 0;
 
         for (int i = 0; i < num; i ++ ) {
@@ -58,7 +57,6 @@ public class TsUtilTest {
 //        ArrayList<TimeSeries> tsList = new ArrayList<>();
         ByteBuf tsList = Unpooled.buffer(num * Parameters.tsSize);
         ByteBuf tsListCopy = Unpooled.buffer(num * Parameters.tsSize);
-        tsList.writeByte(Constants.MsgType.SEND_TS);
         long t = 0, allT1 = 0, allT2 = 0;
 
         for (int i = 0; i < num; i ++ ) {

@@ -19,4 +19,13 @@ public class SaxUtil {
         }
         return l;
     }
+
+//    int compare(byte[] a, byte[] b) {
+//        assert a.length == b.length;
+//        for (int i = a.length - 1; i > 0; i -- ) {
+//            if ((a[i] & 0xff) < (b[i] & 0xff)) return -1;
+//            else if ((a[i] &0xff) > (b[i] & 0xff)) return 1;
+//        }
+//        return 0;
+//    }
 }

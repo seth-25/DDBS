@@ -21,33 +21,14 @@ import java.util.concurrent.Executors;
 
 public class InsertClientTest {
 
-
-
     @Test
-    public void testTsBytebuf() {  // worker不应答
-        for (int i = 0; i < 1000005; i ++) {
-            byte[] a = new byte[1024];
-            long timeStamp = new Date().getTime() / 1000;
-            byte[] b = TsUtil.longToBytes(timeStamp);
-            System.out.println("生成时间戳:" + timeStamp + "  hash " + timeStamp % Parameters.tsHash);
-            TimeSeries timeSeries = new TimeSeries(a, b);
-            CacheUtil.timeSeriesLinkedList.offer(timeSeries);
-        }
+    public void startInsert() {  // 发送insert指令
 
-        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.TsNettyServer.port);
+        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.InsertNettyServer.port);
         ChannelFuture channelFuture = insertClient.start();
 
-        long startTime = System.currentTimeMillis();
-
-        byte[] tsList = InsertAction.makeTsListByte(Parameters.Insert.batchTrans);
-        while(tsList.length > 0) {
-            System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.length / Parameters.tsSize);
-            MsgInsert msgInsert = MsgUtil.buildMsgInsert(Constants.MsgType.INSERT_TS, tsList);
-            channelFuture.channel().writeAndFlush(msgInsert);
-            tsList = InsertAction.makeTsListByte(Parameters.Insert.batchTrans);
-        }
-        channelFuture.channel().writeAndFlush(tsList);
-        System.out.println("所有时间戳发送完毕");
+        MsgInsert msgInsert = MsgUtil.buildMsgInsert(Constants.MsgType.INSERT_TS, new byte[0]);
+        channelFuture.channel().writeAndFlush(msgInsert);
 
         try {
             channelFuture.channel().closeFuture().sync(); // 等待关闭
@@ -56,118 +37,6 @@ public class InsertClientTest {
         }
         insertClient.close();
 
-        long endTime = System.currentTimeMillis();
-        System.out.println("执行时间:" + (double)(endTime - startTime) / 1000);
-    }
-
-    @Test
-    public void testTs() {  // worker不应答
-        for (int i = 0; i < 1000005; i ++) {
-            byte[] a = new byte[1024];
-            long timeStamp = new Date().getTime() / 1000;
-            byte[] b = TsUtil.longToBytes(timeStamp);
-            System.out.println("生成时间戳:" + timeStamp + "  hash " + timeStamp % Parameters.tsHash);
-            TimeSeries timeSeries = new TimeSeries(a, b);
-            CacheUtil.timeSeriesLinkedList.offer(timeSeries);
-        }
-
-        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.TsNettyServer.port);
-        ChannelFuture channelFuture = insertClient.start();
-
-        long startTime = System.currentTimeMillis();
-
-        ArrayList<TimeSeries> tsList = InsertAction.makeTsList(Parameters.Insert.batchTrans);
-        while(tsList.size() > 0) {
-            InstructTs instructTs = InstructUtil.buildInstructTs(Constants.MsgType.INSERT_TS, tsList);
-            System.out.println("发送时间戳" + CacheUtil.timeSeriesLinkedList.size() + " " + tsList.size());
-            channelFuture.channel().writeAndFlush(instructTs);
-            if (tsList.size() != 1000) {
-                System.out.println(tsList.get(tsList.size() - 1));
-            }
-            tsList = InsertAction.makeTsList(Parameters.Insert.batchTrans);
-        }
-        InstructTs instructTs = InstructUtil.buildInstructTs(Constants.MsgType.INSERT_TS_FINISH, null);
-        channelFuture.channel().writeAndFlush(instructTs);
-        System.out.println("所有时间戳发送完毕");
-
-        try {
-            channelFuture.channel().closeFuture().sync(); // 等待关闭
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        insertClient.close();
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("执行时间:" + (double)(endTime - startTime) / 1000);
-    }
-
-    @Test
-    public void testTs3() {
-        for (int i = 0; i < 1000005; i ++) {
-            byte[] a = new byte[1024];
-            long timeStamp = new Date().getTime() / 1000;
-            byte[] b = TsUtil.longToBytes(timeStamp);
-            System.out.println("生成时间戳:" + timeStamp + "  hash " + timeStamp % Parameters.tsHash);
-            TimeSeries timeSeries = new TimeSeries(a, b);
-            CacheUtil.timeSeriesLinkedList.offer(timeSeries);
-        }
-
-        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.TsNettyServer.port);
-        ChannelFuture channelFuture = insertClient.start();
-
-        long startTime = System.currentTimeMillis();
-
-        InstructTs instructTs = InstructUtil.buildInstructTs(Constants.MsgType.INSERT_TS, InsertAction.makeTsList(Parameters.Insert.batchTrans));
-        channelFuture.channel().writeAndFlush(instructTs);
-
-        try {
-            channelFuture.channel().closeFuture().sync(); // 等待关闭
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        insertClient.close();
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("执行时间:" + (double)(endTime - startTime) / 1000);
-    }
-
-
-    @Test
-    public void testTsThread() throws InterruptedException {
-        final int taskCount = 20;    // 线程总数
-        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
-        CountDownLatch countDownLatch = new CountDownLatch(taskCount);
-
-        InsertClient insertClient = new InsertClient("Ubuntu002", Parameters.TsNettyServer.port);
-        ChannelFuture channelFuture = insertClient.start();
-
-        for (int i = 0; i < taskCount; i ++ ) {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    byte[] a = new byte[1024];
-                    long timeStamp = new Date().getTime()/1000;
-//                    timeStamp = 1672573334;
-                    byte[] b = TsUtil.longToBytes(timeStamp);
-                    System.out.println("时间戳:" + timeStamp + "  hash " + timeStamp % Parameters.tsHash);
-
-                    TimeSeries timeSeries = new TimeSeries(a, b);
-                    InstructTs instructTs = InstructUtil.buildInstructTs(Constants.MsgType.INSERT_TS, timeSeries);
-                    channelFuture.channel().writeAndFlush(instructTs);
-                    try {
-                        channelFuture.channel().closeFuture().sync(); // 等待关闭
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    System.out.println("关闭");
-                    countDownLatch.countDown();
-                }
-            };
-            newFixedThreadPool.execute(runnable);
-        }
-        countDownLatch.await(); //  等待所有线程结束
-        insertClient.close();
     }
 
 }

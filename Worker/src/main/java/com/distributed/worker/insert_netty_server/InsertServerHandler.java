@@ -3,6 +3,7 @@ package com.distributed.worker.insert_netty_server;
 import com.distributed.util.CacheUtil;
 import common.domain.MsgInsert;
 import com.distributed.worker.insert.InsertAction;
+import common.util.MsgUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
@@ -35,21 +36,13 @@ public class InsertServerHandler extends ChannelInboundHandlerAdapter {
 
         int type = msgInsert.getType();
         switch (type) {
-            case Constants.MsgType.INSERT_TS: // worker收到client的ts，将ts发送到对应worker
+            case Constants.MsgType.INSERT_TS: // worker插入指令,开始读取ts,转成sax并发送
+                System.out.println("开始insert " + clientHostName);
+                channel.writeAndFlush(MsgUtil.buildMsgInsert(Constants.MsgType.FINISH, new byte[0]));   // 回复master,断开连接
 
-                byte[] tsByteList = msgInsert.getData();
-                InsertServer.insertCnt ++ ;
-                System.out.println("收到ts " + InsertServer.insertCnt +  " "  + tsByteList.length + " 传输时间 " + (System.currentTimeMillis() - InsertServer.transTime)  + " " + Thread.currentThread().getName());
-
-
-                long t1 = System.currentTimeMillis();
-
-                InsertAction.tempStoreTs(tsByteList);
-                System.out.println("暂存的ts长度 " + CacheUtil.tempTsList.get("Ubuntu002").size() + " " + CacheUtil.tempTsListCnt.get("Ubuntu002"));
-//                InsertAction.checkStoreTs();
-
-                InsertServer.insertTime += System.currentTimeMillis() - t1;
-                System.out.println("插入时间 " + InsertServer.insertTime);
+                break;
+            case Constants.MsgType.SEND_SAX: // worker插入指令,开始读取ts,转成sax并发送
+                InsertAction.putSaxesBytes(msgInsert.getData());
                 break;
         }
 

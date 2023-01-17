@@ -36,10 +36,16 @@ public class CacheUtil {
     public static Map<String, ArrayList<Sax>> tempSaxList = new ConcurrentHashMap<>();  // 暂存的sax
     public static Map<String, Integer> tempSaxListCnt = new ConcurrentHashMap<>();  // 暂存的ts
 
+
+    public static Map<Integer, FileChannelReader> fileChannelReaderMap = new ConcurrentHashMap<>();
+
+
     public static ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);  // 线程池
+    public static ExecutorService insertThreadPool = Executors.newFixedThreadPool(Parameters.numThread);  // 插入线程池
 
 
-    public static Map<String, InsertClient> workerTsClient = new ConcurrentHashMap<>();
+
+    public static Map<String, InsertClient> workerInsertClient = new ConcurrentHashMap<>();
 
     public static Map<String, InstructClient> workerInstructClient = new ConcurrentHashMap<>();
     public static InstructClient masterInstructClient;
