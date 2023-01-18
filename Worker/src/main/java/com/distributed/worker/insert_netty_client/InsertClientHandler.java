@@ -20,8 +20,8 @@ public class InsertClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!(msg instanceof InstructTs)) return;
-        System.out.println("\t\t收到服务端信息：" + ((InstructTs) msg).getInstruction());
+//        if (!(msg instanceof InstructTs)) return;
+//        System.out.println("\t\t收到服务端信息：" + ((InstructTs) msg).getInstruction());
     }
 
     @Override

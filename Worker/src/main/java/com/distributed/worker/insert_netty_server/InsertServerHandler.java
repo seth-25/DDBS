@@ -30,19 +30,18 @@ public class InsertServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (!(msg instanceof MsgInsert)) return;
         SocketChannel channel = (SocketChannel) ctx.channel();
-        String clientHostName = channel.remoteAddress().getHostName();
+//        String clientHostName = channel.remoteAddress().getHostName();
 
         MsgInsert msgInsert = (MsgInsert) msg;
 
         int type = msgInsert.getType();
         switch (type) {
-            case Constants.MsgType.INSERT_TS: // worker插入指令,开始读取ts,转成sax并发送
-                System.out.println("开始insert " + clientHostName);
-                channel.writeAndFlush(MsgUtil.buildMsgInsert(Constants.MsgType.FINISH, new byte[0]));   // 回复master,断开连接
-
-                break;
-            case Constants.MsgType.SEND_SAX: // worker插入指令,开始读取ts,转成sax并发送
+            case Constants.MsgType.SEND_SAX: // workers收到sax
                 InsertAction.putSaxesBytes(msgInsert.getData());
+                break;
+            case Constants.MsgType.INSERT_TS: // worker收到插入指令,开始读取ts,转成sax并发送
+                System.out.println("开始insert ");
+                channel.writeAndFlush(MsgUtil.buildMsgInsert(Constants.MsgType.FINISH, new byte[0]));   // 回复master,断开连接
                 break;
         }
 

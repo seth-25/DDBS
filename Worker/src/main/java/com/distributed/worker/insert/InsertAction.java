@@ -2,22 +2,16 @@ package com.distributed.worker.insert;
 
 import com.distributed.util.*;
 import com.distributed.worker.insert_netty_client.InsertClient;
-import common.domain.InstructTs;
 import common.domain.MsgInsert;
 import common.domain.Sax;
-import common.domain.TimeSeries;
-import com.distributed.util.FileUtil;
 import common.setting.Parameters;
-import common.util.InstructUtil;
 import common.util.MsgUtil;
-import common.util.SaxUtil;
-import common.util.TsUtil;
 import javafx.util.Pair;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import common.setting.Constants;
 public class InsertAction {
 
@@ -153,6 +147,19 @@ public class InsertAction {
 //    }
 
     public static void insert() {
+        ArrayList<File> files = null;
+        try {
+            files = FileUtil.getAllFile(Parameters.FileSetting.inputPath);
+            int fileNum = -1;
+            for (File file: files) {
+                FileChannelReader reader = new FileChannelReader(file.getPath(), Parameters.FileSetting.readSize, ++ fileNum );  // 初始化的ts
+                CacheUtil.fileChannelReaderMap.put(fileNum, reader);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("ts目录不存在"  + e);
+        }
+
+
         CacheUtil.insertThreadPool.execute(new Insert());
     }
 
@@ -199,7 +206,14 @@ public class InsertAction {
      * 向数据库插入多个leaftimekey(8位sax+7位文件偏移+1位文件名+8位时间戳)的byte数组
      */
     public static void putSaxesBytes(byte[] leafTimeKeysBytes) {
-        DBUtil.dataBase.put(leafTimeKeysBytes);
+//        DBUtil.dataBase.put(leafTimeKeysBytes);
+        CacheUtil.insertThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                DBUtil.dataBase.put(leafTimeKeysBytes);
+            }
+        });
+
 //        System.out.println("sax存储完成");
     }
 

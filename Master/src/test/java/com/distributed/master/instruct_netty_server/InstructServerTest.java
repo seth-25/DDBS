@@ -1,6 +1,6 @@
 package com.distributed.master.instruct_netty_server;
 
-import com.distributed.domain.Parameters;
+import common.setting.Parameters;
 
 public class InstructServerTest {
 //    @Test
@@ -12,7 +12,7 @@ public class InstructServerTest {
 
     public static void main(String[] args) {
         //启动服务端
-        InstructServer instructServer = new InstructServer(Parameters.InstructNettyServer.port);
-        instructServer.start();
+//        InstructServer instructServer = new InstructServer(Parameters.InstructNettyServer.port);
+//        instructServer.start();
     }
 }

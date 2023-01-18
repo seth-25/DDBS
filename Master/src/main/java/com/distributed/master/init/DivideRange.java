@@ -1,10 +1,8 @@
 package com.distributed.master.init;
 
-import com.distributed.domain.Parameters;
 import javafx.util.Pair;
-
 import java.util.*;
-
+import common.setting.Parameters;
 
 public class DivideRange {
 
@@ -43,7 +41,7 @@ public class DivideRange {
             totalCnt += entry.getValue();
         };
 
-        long numSaxPerRanges = totalCnt / Parameters.numWorkerInit;
+        long numSaxPerRanges = totalCnt / Parameters.Master.numWorkerInit;
         ArrayList<Pair<byte[], byte[]>> rangePairs = new ArrayList<>();
 
         long cnt = 0, num = 0;
@@ -56,7 +54,7 @@ public class DivideRange {
             if (cnt >= numSaxPerRanges) {
                 num ++ ;
                 byte[] rightInterval = entry.getKey().getBytes();
-                if (num >= Parameters.numWorkerInit) {  // 最后一台机器右区间最大
+                if (num >= Parameters.Master.numWorkerInit) {  // 最后一台机器右区间最大
                     Arrays.fill(rightInterval, (byte) 0xff);
                 }
                 rangePairs.add(new Pair<>(leftInterval, rightInterval));

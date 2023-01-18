@@ -25,7 +25,7 @@ public class versionTest {
 
         byte[] versionBytes = new byte[40];
 
-        InstructClient instructionClient = new InstructClient(Parameters.hostName, Parameters.InstructNettyClient.port);
+        InstructClient instructionClient = new InstructClient(Parameters.hostName, Parameters.InstructNettyServer.port);
         ChannelFuture channelFuture = instructionClient.start();
         InstructRun instructrun = InstructUtil.buildInstructRun(Constants.MsgType.SEND_VERSION, new Pair<>(versionBytes, Parameters.hostName));
         //发送信息

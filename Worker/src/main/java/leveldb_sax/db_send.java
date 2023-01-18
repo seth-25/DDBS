@@ -17,7 +17,7 @@ public class db_send {
         //第一个字节为1，发送versionid 4字节， 删除的个数n1 4字节，(saxt_smallest 8字节，saxt_biggest 8字节，startTime 8字节，endTime 8字节) * n1
         //增加的个数n2 4字节，(number 8字节，saxt_smallest 8字节，saxt_biggest 8字节，startTime 8字节，endTime 8字节) * n2
 
-        InstructClient instructionClient = new InstructClient(Parameters.hostName, Parameters.InstructNettyClient.port);
+        InstructClient instructionClient = new InstructClient(Parameters.hostName, Parameters.InstructNettyServer.port);
         ChannelFuture channelFuture = instructionClient.start();
         InstructRun instructrun = InstructUtil.buildInstructRun(Constants.MsgType.SEND_VERSION, new Pair<>(edit, Parameters.hostName));
         //发送信息

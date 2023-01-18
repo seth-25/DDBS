@@ -2,14 +2,13 @@ package com.distributed.master.init;
 
 import common.setting.Constants;
 import common.domain.InstructInit;
-import com.distributed.domain.Parameters;
 import com.distributed.master.instruct_netty_client.InstructClient;
 import com.distributed.util.CacheUtil;
 import common.util.InstructUtil;
 import io.netty.channel.Channel;
 import javafx.util.Pair;
 import org.apache.curator.framework.recipes.cache.ChildData;
-
+import common.setting.Parameters;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -32,7 +31,7 @@ public class InitAction {
         CacheUtil.workerInstructClient.put(workerHostName, instructClient);
     }
 
-    private static void sendInstructs(List<ChildData> childDataList, String instruct, Object obj) {
+    private static void sendInstructs(List<ChildData> childDataList, int instruct, Object obj) {
         ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(Parameters.numThread);
         for (ChildData childData : childDataList) {
             Runnable runnable = new Runnable() {
@@ -68,7 +67,7 @@ public class InitAction {
                 flag = false;
             }
         }
-        if (flag && childDataList.size() >= Parameters.numWorkerInit) { // 所有worker均启动，且排完序
+        if (flag && childDataList.size() >= Parameters.Master.numWorkerInit) { // 所有worker均启动，且排完序
             sendInstructs(childDataList, Constants.MsgType.SEND_SAX_STATISTIC, Parameters.hostName);
         }
     }
@@ -113,7 +112,7 @@ public class InitAction {
             }
 
             // 计算每个worker的ts范围
-            int numTs = Parameters.tsHash / Parameters.numWorkerInit;
+            int numTs = Parameters.tsHash / Parameters.Master.numWorkerInit;
             index = 0;
             for (Map.Entry<String, Pair<Integer, Integer>> entry: CacheUtil.timeStampRanges.entrySet()) {
                 entry.setValue(new Pair<>(index, index + numTs - 1));

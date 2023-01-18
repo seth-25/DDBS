@@ -13,7 +13,7 @@ public class InstructClientTest {
     @Test
     public void testInstructAndInsert() throws InterruptedException {
         //启动客户端
-        InstructClient instructClient = new InstructClient("Ubuntu002", Parameters.InstructNettyClient.port);
+        InstructClient instructClient = new InstructClient("Ubuntu002", Parameters.InstructNettyServer.port);
         ChannelFuture channelFuture = instructClient.start();
 
         InstructInit instructInit = InstructUtil.buildInstructInit(123, "Ubuntu003");

@@ -1,6 +1,6 @@
 package com.distributed.util;
 
-import com.distributed.domain.Parameters;
+import common.setting.Parameters;
 
 import java.util.ArrayList;
 

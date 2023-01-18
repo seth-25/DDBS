@@ -1,6 +1,6 @@
 package com.distributed;
 
-import com.distributed.domain.Parameters;
+import common.setting.Parameters;
 import com.distributed.master.Master;
 import com.distributed.master.instruct_netty_server.InstructServer;
 

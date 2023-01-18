@@ -1,7 +1,7 @@
 package com.distributed.master;
 
 import common.setting.Constants;
-import com.distributed.domain.Parameters;
+import common.setting.Parameters;
 import com.distributed.master.init.InitAction;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;

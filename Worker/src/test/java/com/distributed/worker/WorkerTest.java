@@ -11,7 +11,7 @@ import javafx.util.Pair;
 public class WorkerTest {
 
     public static void main(String[] args) {
-        InstructClient instructionClient = new InstructClient(Parameters.hostName, Parameters.InstructNettyClient.port);
+        InstructClient instructionClient = new InstructClient(Parameters.hostName, Parameters.InstructNettyServer.port);
         ChannelFuture channelFuture = instructionClient.start();
         InstructRun instructrun = InstructUtil.buildInstructRun(Constants.MsgType.SEND_VERSION, new Pair<>(new byte[10], Parameters.hostName));
         //发送信息
